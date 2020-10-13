@@ -37,12 +37,12 @@
     "repeat-string": "^1.0.0"
   },
   "devDependencies": {
-    "mdast-util-from-markdown": "^0.7.0",
-    "micromark-extension-math": "~0.1.0",
+    "mdast-util-from-markdown": "^0.8.0",
+    "micromark-extension-math": "^0.1.0",
     "nyc": "^15.0.0",
     "prettier": "^2.0.0",
-    "remark-cli": "^8.0.0",
-    "remark-preset-wooorm": "^7.0.0",
+    "remark-cli": "^9.0.0-alpha.1",
+    "remark-preset-wooorm": "^8.0.0",
     "tape": "^5.0.0",
     "xo": "^0.33.0"
   },
