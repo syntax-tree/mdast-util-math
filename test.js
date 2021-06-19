@@ -1,14 +1,14 @@
-var test = require('tape')
-var fromMarkdown = require('mdast-util-from-markdown')
-var toMarkdown = require('mdast-util-to-markdown')
-var syntax = require('micromark-extension-math')
-var math = require('.')
+import test from 'tape'
+import fromMarkdown from 'mdast-util-from-markdown'
+import toMarkdown from 'mdast-util-to-markdown'
+import math from 'micromark-extension-math'
+import {mathFromMarkdown, mathToMarkdown} from './index.js'
 
 test('markdown -> mdast', function (t) {
   t.deepEqual(
     fromMarkdown('a $b$ c', {
-      extensions: [syntax],
-      mdastExtensions: [math.fromMarkdown]
+      extensions: [math],
+      mdastExtensions: [mathFromMarkdown]
     }),
     {
       type: 'root',
@@ -62,8 +62,8 @@ test('markdown -> mdast', function (t) {
 
   t.deepEqual(
     fromMarkdown('$$\na\n$$', {
-      extensions: [syntax],
-      mdastExtensions: [math.fromMarkdown]
+      extensions: [math],
+      mdastExtensions: [mathFromMarkdown]
     }).children[0],
     {
       type: 'math',
@@ -84,8 +84,8 @@ test('markdown -> mdast', function (t) {
 
   t.deepEqual(
     fromMarkdown('$$a&amp;b\\&c\n', {
-      extensions: [syntax],
-      mdastExtensions: [math.fromMarkdown]
+      extensions: [math],
+      mdastExtensions: [mathFromMarkdown]
     }).children[0],
     {
       type: 'math',
@@ -106,8 +106,8 @@ test('markdown -> mdast', function (t) {
 
   t.deepEqual(
     fromMarkdown('$a\nb\nb$', {
-      extensions: [syntax],
-      mdastExtensions: [math.fromMarkdown]
+      extensions: [math],
+      mdastExtensions: [mathFromMarkdown]
     }).children[0],
     {
       type: 'paragraph',
@@ -141,14 +141,14 @@ test('mdast -> markdown', function (t) {
   t.deepEqual(
     toMarkdown(
       {type: 'inlineMath', value: 'a'},
-      {extensions: [math.toMarkdown]}
+      {extensions: [mathToMarkdown]}
     ),
     '$a$\n',
     'should serialize math (text)'
   )
 
   t.deepEqual(
-    toMarkdown({type: 'inlineMath'}, {extensions: [math.toMarkdown]}),
+    toMarkdown({type: 'inlineMath'}, {extensions: [mathToMarkdown]}),
     '$$\n',
     'should serialize math (text) w/o `value`'
   )
@@ -156,7 +156,7 @@ test('mdast -> markdown', function (t) {
   t.deepEqual(
     toMarkdown(
       {type: 'inlineMath', value: 'a \\$ b'},
-      {extensions: [math.toMarkdown]}
+      {extensions: [mathToMarkdown]}
     ),
     '$$a \\$ b$$\n',
     'should serialize math (text) w/ two dollar signs when including a dollar'
@@ -165,7 +165,7 @@ test('mdast -> markdown', function (t) {
   t.deepEqual(
     toMarkdown(
       {type: 'inlineMath', value: 'a \\$'},
-      {extensions: [math.toMarkdown]}
+      {extensions: [mathToMarkdown]}
     ),
     '$$ a \\$ $$\n',
     'should serialize math (text) w/ padding when ending in a dollar sign'
@@ -174,38 +174,38 @@ test('mdast -> markdown', function (t) {
   t.deepEqual(
     toMarkdown(
       {type: 'inlineMath', value: '$ a'},
-      {extensions: [math.toMarkdown]}
+      {extensions: [mathToMarkdown]}
     ),
     '$$ $ a $$\n',
     'should serialize math (text) w/ padding when starting in a dollar sign'
   )
 
   t.deepEqual(
-    toMarkdown({type: 'math', value: 'a'}, {extensions: [math.toMarkdown]}),
+    toMarkdown({type: 'math', value: 'a'}, {extensions: [mathToMarkdown]}),
     '$$\na\n$$\n',
     'should serialize math (flow)'
   )
 
   t.deepEqual(
-    toMarkdown({type: 'math'}, {extensions: [math.toMarkdown]}),
+    toMarkdown({type: 'math'}, {extensions: [mathToMarkdown]}),
     '$$\n$$\n',
     'should serialize math (flow) w/o `value`'
   )
 
   t.deepEqual(
-    toMarkdown({type: 'math', meta: 'a'}, {extensions: [math.toMarkdown]}),
+    toMarkdown({type: 'math', meta: 'a'}, {extensions: [mathToMarkdown]}),
     '$$a\n$$\n',
     'should serialize math (flow) w/ `meta`'
   )
 
   t.deepEqual(
-    toMarkdown({type: 'math', value: '$$'}, {extensions: [math.toMarkdown]}),
+    toMarkdown({type: 'math', value: '$$'}, {extensions: [mathToMarkdown]}),
     '$$$\n$$\n$$$\n',
     'should serialize math (flow) w/ more dollars than occur together in `value`'
   )
 
   t.deepEqual(
-    toMarkdown({type: 'math', meta: 'a'}, {extensions: [math.toMarkdown]}),
+    toMarkdown({type: 'math', meta: 'a'}, {extensions: [mathToMarkdown]}),
     '$$a\n$$\n',
     'should serialize math (flow) w/ `meta`'
   )
@@ -213,7 +213,7 @@ test('mdast -> markdown', function (t) {
   t.deepEqual(
     toMarkdown(
       {type: 'paragraph', children: [{type: 'text', value: 'a $ b'}]},
-      {extensions: [math.toMarkdown]}
+      {extensions: [mathToMarkdown]}
     ),
     'a \\$ b\n',
     'should escape `$` in phrasing'
@@ -229,7 +229,7 @@ test('mdast -> markdown', function (t) {
           {type: 'text', value: '$ c'}
         ]
       },
-      {extensions: [math.toMarkdown]}
+      {extensions: [mathToMarkdown]}
     ),
     'a \\$$b$\\$ c\n',
     'should escape `$` around math (text)'
@@ -238,23 +238,20 @@ test('mdast -> markdown', function (t) {
   t.deepEqual(
     toMarkdown(
       {type: 'definition', label: 'a', url: 'b', title: 'a\n$\nb'},
-      {extensions: [math.toMarkdown]}
+      {extensions: [mathToMarkdown]}
     ),
     '[a]: b "a\n$\nb"\n',
     'should not escape `$` at the start of a line'
   )
 
   t.deepEqual(
-    toMarkdown(
-      {type: 'math', meta: 'a\rb\nc'},
-      {extensions: [math.toMarkdown]}
-    ),
+    toMarkdown({type: 'math', meta: 'a\rb\nc'}, {extensions: [mathToMarkdown]}),
     '$$a&#xD;b\nc\n$$\n',
     'should escape `\\r`, `\\n` when in `meta` of math (flow)'
   )
 
   t.deepEqual(
-    toMarkdown({type: 'math', meta: 'a$b'}, {extensions: [math.toMarkdown]}),
+    toMarkdown({type: 'math', meta: 'a$b'}, {extensions: [mathToMarkdown]}),
     '$$a&#x24;b\n$$\n',
     'should escape `$` when in `meta` of math (flow)'
   )

@@ -18,6 +18,9 @@ You probably shouldn’t use this package directly, but instead use
 
 ## Install
 
+This package is [ESM only](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c):
+Node 12+ is needed to use it and it must be `import`ed instead of `require`d.
+
 [npm][]:
 
 ```sh
@@ -90,13 +93,13 @@ $$
 
 ## API
 
-### `math.fromMarkdown`
+This package exports the following identifier: `mathFromMarkdown`,
+`mathToMarkdown`.
+There is no default export.
 
-### `math.toMarkdown`
+### `mathFromMarkdown`
 
-> Note: the separate extensions are also available at
-> `mdast-util-math/from-markdown` and
-> `mdast-util-math/to-markdown`.
+### `mathToMarkdown`
 
 Support math.
 These exports are extensions, respectively for
