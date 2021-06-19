@@ -50,7 +50,7 @@ function enterMathFlowMeta() {
 }
 
 function exitMathFlowMeta() {
-  var data = this.resume()
+  const data = this.resume()
   this.stack[this.stack.length - 1].meta = data
 }
 
@@ -62,8 +62,8 @@ function exitMathFlowFence() {
 }
 
 function exitMathFlow(token) {
-  var data = this.resume().replace(/^(\r?\n|\r)|(\r?\n|\r)$/g, '')
-  var node = this.exit(token)
+  const data = this.resume().replace(/^(\r?\n|\r)|(\r?\n|\r)$/g, '')
+  const node = this.exit(token)
   node.value = data
   node.data.hChildren[0].value = data
   this.setData('mathFlowInside')
@@ -86,8 +86,8 @@ function enterMathText(token) {
 }
 
 function exitMathText(token) {
-  var data = this.resume()
-  var node = this.exit(token)
+  const data = this.resume()
+  const node = this.exit(token)
   node.value = data
   node.data.hChildren[0].value = data
 }
@@ -98,11 +98,11 @@ function exitMathData(token) {
 }
 
 function math(node, _, context) {
-  var raw = node.value || ''
-  var fence = '$'.repeat(Math.max(longestStreak(raw, '$') + 1, 2))
-  var exit = context.enter('mathFlow')
-  var value = fence
-  var subexit
+  const raw = node.value || ''
+  const fence = '$'.repeat(Math.max(longestStreak(raw, '$') + 1, 2))
+  const exit = context.enter('mathFlow')
+  let value = fence
+  let subexit
 
   if (node.meta) {
     subexit = context.enter('mathFlowMeta')
@@ -122,10 +122,9 @@ function math(node, _, context) {
 }
 
 function inlineMath(node) {
-  var value = node.value || ''
-  var size = 1
-  var pad = ''
-  var sequence
+  const value = node.value || ''
+  let size = 1
+  let pad = ''
 
   // If there is a single dollar sign on its own in the math, use a fence of
   // two.
@@ -144,7 +143,7 @@ function inlineMath(node) {
     pad = ' '
   }
 
-  sequence = '$'.repeat(size)
+  const sequence = '$'.repeat(size)
   return sequence + pad + value + pad + sequence
 }
 

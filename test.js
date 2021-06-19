@@ -4,7 +4,7 @@ import toMarkdown from 'mdast-util-to-markdown'
 import math from 'micromark-extension-math'
 import {mathFromMarkdown, mathToMarkdown} from './index.js'
 
-test('markdown -> mdast', function (t) {
+test('markdown -> mdast', (t) => {
   t.deepEqual(
     fromMarkdown('a $b$ c', {
       extensions: [math],
@@ -137,7 +137,7 @@ test('markdown -> mdast', function (t) {
   t.end()
 })
 
-test('mdast -> markdown', function (t) {
+test('mdast -> markdown', (t) => {
   t.deepEqual(
     toMarkdown(
       {type: 'inlineMath', value: 'a'},
