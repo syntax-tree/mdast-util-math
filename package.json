@@ -34,8 +34,7 @@
   ],
   "dependencies": {
     "longest-streak": "^3.0.0",
-    "mdast-util-to-markdown": "^0.6.0",
-    "repeat-string": "^1.0.0"
+    "mdast-util-to-markdown": "^0.6.0"
   },
   "devDependencies": {
     "c8": "^7.0.0",

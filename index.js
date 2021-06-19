@@ -1,4 +1,3 @@
-import repeat from 'repeat-string'
 import {longestStreak} from 'longest-streak'
 import safe from 'mdast-util-to-markdown/lib/util/safe.js'
 
@@ -100,7 +99,7 @@ function exitMathData(token) {
 
 function math(node, _, context) {
   var raw = node.value || ''
-  var fence = repeat('$', Math.max(longestStreak(raw, '$') + 1, 2))
+  var fence = '$'.repeat(Math.max(longestStreak(raw, '$') + 1, 2))
   var exit = context.enter('mathFlow')
   var value = fence
   var subexit
@@ -131,9 +130,7 @@ function inlineMath(node) {
   // If there is a single dollar sign on its own in the math, use a fence of
   // two.
   // If there are two in a row, use one.
-  while (
-    new RegExp('(^|[^$])' + repeat('\\$', size) + '([^$]|$)').test(value)
-  ) {
+  while (new RegExp('(^|[^$])' + '\\$'.repeat(size) + '([^$]|$)').test(value)) {
     size++
   }
 
@@ -147,7 +144,7 @@ function inlineMath(node) {
     pad = ' '
   }
 
-  sequence = repeat('$', size)
+  sequence = '$'.repeat(size)
   return sequence + pad + value + pad + sequence
 }
 
