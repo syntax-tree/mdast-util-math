@@ -13,8 +13,12 @@ Extension for [`mdast-util-from-markdown`][from-markdown] and/or
 When parsing (`from-markdown`), must be combined with
 [`micromark-extension-math`][extension].
 
-You probably shouldn’t use this package directly, but instead use
-[`remark-math`][remark-math] with **[remark][]**.
+## When to use this
+
+Use this if you’re dealing with the AST manually.
+It might be better to use [`remark-math`][remark-math] with **[remark][]**,
+which includes this but provides a nicer interface and makes it easier to
+combine with hundreds of plugins.
 
 ## Install
 
@@ -42,22 +46,22 @@ $$
 And our script, `example.js`, looks as follows:
 
 ```js
-var fs = require('fs')
-var fromMarkdown = require('mdast-util-from-markdown')
-var toMarkdown = require('mdast-util-to-markdown')
-var syntax = require('micromark-extension-math')
-var math = require('mdast-util-math')
+import fs from 'fs'
+import {fromMarkdown} from 'mdast-util-from-markdown'
+import {toMarkdown} from 'mdast-util-to-markdown'
+import {math} from 'micromark-extension-math'
+import {mathFromMarkdown, mathToMarkdown} from 'mdast-util-math'
 
-var doc = fs.readFileSync('example.md')
+const doc = fs.readFileSync('example.md')
 
-var tree = fromMarkdown(doc, {
-  extensions: [syntax],
-  mdastExtensions: [math.fromMarkdown]
+const tree = fromMarkdown(doc, {
+  extensions: [math],
+  mdastExtensions: [mathFromMarkdown]
 })
 
 console.log(tree)
 
-var out = toMarkdown(tree, {extensions: [math.toMarkdown]})
+const out = toMarkdown(tree, {extensions: [mathToMarkdown]})
 
 console.log(out)
 ```
