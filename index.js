@@ -1,6 +1,18 @@
-import {longestStreak} from 'longest-streak'
-import safe from 'mdast-util-to-markdown/lib/util/safe.js'
+/**
+ * @typedef {import('mdast').Literal} Literal
+ * @typedef {import('mdast-util-from-markdown').Extension} FromMarkdownExtension
+ * @typedef {import('mdast-util-from-markdown').Handle} FromMarkdownHandle
+ * @typedef {import('mdast-util-to-markdown').Options} ToMarkdownExtension
+ * @typedef {import('mdast-util-to-markdown').Handle} ToMarkdownHandle
+ *
+ * @typedef {Literal & {type: 'math', lang?: string|null, meta?: string|null}} Math
+ * @typedef {Literal & {type: 'inlineMath'}} InlineMath
+ */
 
+import {longestStreak} from 'longest-streak'
+import {safe} from 'mdast-util-to-markdown/lib/util/safe.js'
+
+/** @type {FromMarkdownExtension} */
 export const mathFromMarkdown = {
   enter: {
     mathFlow: enterMathFlow,
@@ -17,6 +29,7 @@ export const mathFromMarkdown = {
   }
 }
 
+/** @type {ToMarkdownExtension} */
 export const mathToMarkdown = {
   unsafe: [
     {character: '\r', inConstruct: ['mathFlowMeta']},
@@ -29,31 +42,35 @@ export const mathToMarkdown = {
 
 inlineMath.peek = inlineMathPeek
 
+/** @type {FromMarkdownHandle} */
 function enterMathFlow(token) {
-  this.enter(
-    {
-      type: 'math',
-      meta: null,
-      value: '',
-      data: {
-        hName: 'div',
-        hProperties: {className: ['math', 'math-display']},
-        hChildren: [{type: 'text', value: ''}]
-      }
-    },
-    token
-  )
+  /** @type {Math} */
+  const node = {
+    type: 'math',
+    meta: null,
+    value: '',
+    data: {
+      hName: 'div',
+      hProperties: {className: ['math', 'math-display']},
+      hChildren: [{type: 'text', value: ''}]
+    }
+  }
+  // @ts-expect-error: custom node.
+  this.enter(node, token)
 }
 
+/** @type {FromMarkdownHandle} */
 function enterMathFlowMeta() {
   this.buffer()
 }
 
+/** @type {FromMarkdownHandle} */
 function exitMathFlowMeta() {
   const data = this.resume()
   this.stack[this.stack.length - 1].meta = data
 }
 
+/** @type {FromMarkdownHandle} */
 function exitMathFlowFence() {
   // Exit if this is the closing fence.
   if (this.getData('mathFlowInside')) return
@@ -61,47 +78,58 @@ function exitMathFlowFence() {
   this.setData('mathFlowInside', true)
 }
 
+/** @type {FromMarkdownHandle} */
 function exitMathFlow(token) {
   const data = this.resume().replace(/^(\r?\n|\r)|(\r?\n|\r)$/g, '')
   const node = this.exit(token)
   node.value = data
+  // @ts-expect-error: we defined it.
   node.data.hChildren[0].value = data
   this.setData('mathFlowInside')
 }
 
+/** @type {FromMarkdownHandle} */
 function enterMathText(token) {
-  this.enter(
-    {
-      type: 'inlineMath',
-      value: '',
-      data: {
-        hName: 'span',
-        hProperties: {className: ['math', 'math-inline']},
-        hChildren: [{type: 'text', value: ''}]
-      }
-    },
-    token
-  )
+  /** @type {InlineMath} */
+  const node = {
+    type: 'inlineMath',
+    value: '',
+    data: {
+      hName: 'span',
+      hProperties: {className: ['math', 'math-inline']},
+      hChildren: [{type: 'text', value: ''}]
+    }
+  }
+  // @ts-expect-error: custom node.
+  this.enter(node, token)
   this.buffer()
 }
 
+/** @type {FromMarkdownHandle} */
 function exitMathText(token) {
   const data = this.resume()
   const node = this.exit(token)
   node.value = data
+  // @ts-expect-error: we defined it.
   node.data.hChildren[0].value = data
 }
 
+/** @type {FromMarkdownHandle} */
 function exitMathData(token) {
   this.config.enter.data.call(this, token)
   this.config.exit.data.call(this, token)
 }
 
+/**
+ * @type {ToMarkdownHandle}
+ * @param {Math} node
+ */
 function math(node, _, context) {
   const raw = node.value || ''
   const fence = '$'.repeat(Math.max(longestStreak(raw, '$') + 1, 2))
   const exit = context.enter('mathFlow')
   let value = fence
+  /** @type {ReturnType<context['enter']>} */
   let subexit
 
   if (node.meta) {
@@ -121,6 +149,10 @@ function math(node, _, context) {
   return value
 }
 
+/**
+ * @type {ToMarkdownHandle}
+ * @param {InlineMath} node
+ */
 function inlineMath(node) {
   const value = node.value || ''
   let size = 1
@@ -147,6 +179,7 @@ function inlineMath(node) {
   return sequence + pad + value + pad + sequence
 }
 
+/** @type {ToMarkdownHandle} */
 function inlineMathPeek() {
   return '$'
 }
