@@ -31,6 +31,7 @@
   "main": "index.js",
   "types": "index.d.ts",
   "files": [
+    "complex-types.d.ts",
     "index.d.ts",
     "index.js"
   ],
@@ -54,7 +55,7 @@
     "xo": "^0.39.0"
   },
   "scripts": {
-    "build": "rimraf \"*.d.ts\" && tsc && type-coverage",
+    "build": "rimraf \"{index,test}.d.ts\" && tsc && type-coverage",
     "format": "remark . -qfo && prettier . -w --loglevel warn && xo --fix",
     "test-api": "node --conditions development test.js",
     "test-coverage": "c8 --check-coverage --branches 100 --functions 100 --lines 100 --statements 100 --reporter lcov node --conditions development test.js",

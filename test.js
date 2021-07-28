@@ -148,6 +148,7 @@ test('mdast -> markdown', (t) => {
   )
 
   t.deepEqual(
+    // @ts-expect-error: `value` missing.
     toMarkdown({type: 'inlineMath'}, {extensions: [mathToMarkdown]}),
     '$$\n',
     'should serialize math (text) w/o `value`'
@@ -187,12 +188,14 @@ test('mdast -> markdown', (t) => {
   )
 
   t.deepEqual(
+    // @ts-expect-error: `value` missing.
     toMarkdown({type: 'math'}, {extensions: [mathToMarkdown]}),
     '$$\n$$\n',
     'should serialize math (flow) w/o `value`'
   )
 
   t.deepEqual(
+    // @ts-expect-error: `value` missing.
     toMarkdown({type: 'math', meta: 'a'}, {extensions: [mathToMarkdown]}),
     '$$a\n$$\n',
     'should serialize math (flow) w/ `meta`'
@@ -205,6 +208,7 @@ test('mdast -> markdown', (t) => {
   )
 
   t.deepEqual(
+    // @ts-expect-error: `value` missing.
     toMarkdown({type: 'math', meta: 'a'}, {extensions: [mathToMarkdown]}),
     '$$a\n$$\n',
     'should serialize math (flow) w/ `meta`'
@@ -237,7 +241,13 @@ test('mdast -> markdown', (t) => {
 
   t.deepEqual(
     toMarkdown(
-      {type: 'definition', label: 'a', url: 'b', title: 'a\n$\nb'},
+      {
+        type: 'definition',
+        label: 'a',
+        identifier: 'a',
+        url: 'b',
+        title: 'a\n$\nb'
+      },
       {extensions: [mathToMarkdown]}
     ),
     '[a]: b "a\n$\nb"\n',
@@ -245,13 +255,19 @@ test('mdast -> markdown', (t) => {
   )
 
   t.deepEqual(
-    toMarkdown({type: 'math', meta: 'a\rb\nc'}, {extensions: [mathToMarkdown]}),
+    toMarkdown(
+      {type: 'math', meta: 'a\rb\nc', value: ''},
+      {extensions: [mathToMarkdown]}
+    ),
     '$$a&#xD;b\nc\n$$\n',
     'should escape `\\r`, `\\n` when in `meta` of math (flow)'
   )
 
   t.deepEqual(
-    toMarkdown({type: 'math', meta: 'a$b'}, {extensions: [mathToMarkdown]}),
+    toMarkdown(
+      {type: 'math', meta: 'a$b', value: ''},
+      {extensions: [mathToMarkdown]}
+    ),
     '$$a&#x24;b\n$$\n',
     'should escape `$` when in `meta` of math (flow)'
   )
