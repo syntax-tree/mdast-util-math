@@ -7,7 +7,7 @@ import {mathFromMarkdown, mathToMarkdown} from './index.js'
 test('markdown -> mdast', (t) => {
   t.deepEqual(
     fromMarkdown('a $b$ c', {
-      extensions: [math],
+      extensions: [math()],
       mdastExtensions: [mathFromMarkdown]
     }),
     {
@@ -62,7 +62,7 @@ test('markdown -> mdast', (t) => {
 
   t.deepEqual(
     fromMarkdown('$$\na\n$$', {
-      extensions: [math],
+      extensions: [math()],
       mdastExtensions: [mathFromMarkdown]
     }).children[0],
     {
@@ -84,7 +84,7 @@ test('markdown -> mdast', (t) => {
 
   t.deepEqual(
     fromMarkdown('$$a&amp;b\\&c\n', {
-      extensions: [math],
+      extensions: [math()],
       mdastExtensions: [mathFromMarkdown]
     }).children[0],
     {
@@ -106,7 +106,7 @@ test('markdown -> mdast', (t) => {
 
   t.deepEqual(
     fromMarkdown('$a\nb\nb$', {
-      extensions: [math],
+      extensions: [math()],
       mdastExtensions: [mathFromMarkdown]
     }).children[0],
     {
