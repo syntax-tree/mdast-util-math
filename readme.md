@@ -103,12 +103,21 @@ There is no default export.
 
 ### `mathFromMarkdown()`
 
-### `mathToMarkdown()`
+### `mathToMarkdown(toOptions?)`
 
 Support math.
 These exports are functions that create extensions, respectively for
 [`mdast-util-from-markdown`][from-markdown] and
 [`mdast-util-to-markdown`][to-markdown].
+
+##### `toOptions`
+
+###### `toOptions.singleDollarTextMath`
+
+Whether to support math (text) with a single dollar (`boolean`, default:
+`true`).
+Single dollars work in Pandoc and many other places, but often interfere with
+“normal” dollars in text.
 
 ## Related
 

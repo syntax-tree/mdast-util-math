@@ -148,6 +148,15 @@ test('mdast -> markdown', (t) => {
   )
 
   t.deepEqual(
+    toMarkdown(
+      {type: 'inlineMath', value: 'a'},
+      {extensions: [mathToMarkdown({singleDollarTextMath: false})]}
+    ),
+    '$$a$$\n',
+    'should serialize math (text) with at least 2 dollars w/ `singleDollarTextMath: false`'
+  )
+
+  t.deepEqual(
     // @ts-expect-error: `value` missing.
     toMarkdown({type: 'inlineMath'}, {extensions: [mathToMarkdown()]}),
     '$$\n',
@@ -221,6 +230,24 @@ test('mdast -> markdown', (t) => {
     ),
     'a \\$ b\n',
     'should escape `$` in phrasing'
+  )
+
+  t.deepEqual(
+    toMarkdown(
+      {type: 'paragraph', children: [{type: 'text', value: 'a $ b'}]},
+      {extensions: [mathToMarkdown({singleDollarTextMath: false})]}
+    ),
+    'a $ b\n',
+    'should not escape a single dollar in phrasing w/ `singleDollarTextMath: false`'
+  )
+
+  t.deepEqual(
+    toMarkdown(
+      {type: 'paragraph', children: [{type: 'text', value: 'a $$ b'}]},
+      {extensions: [mathToMarkdown({singleDollarTextMath: false})]}
+    ),
+    'a \\$$ b\n',
+    'should escape two dollars in phrasing w/ `singleDollarTextMath: false`'
   )
 
   t.deepEqual(

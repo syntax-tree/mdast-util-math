@@ -5,6 +5,13 @@
  * @typedef {import('mdast-util-to-markdown').Handle} ToMarkdownHandle
  * @typedef {import('./complex-types').Math} Math
  * @typedef {import('./complex-types').InlineMath} InlineMath
+ *
+ * @typedef ToOptions
+ * @property {boolean} [singleDollarTextMath=true]
+ *   Whether to support math (text) with a single dollar (`boolean`, default:
+ *   `true`).
+ *   Single dollars work in Pandoc and many other places, but often interfere
+ *   with “normal” dollars in text.
  */
 
 import {longestStreak} from 'longest-streak'
@@ -111,16 +118,29 @@ export function mathFromMarkdown() {
 }
 
 /**
+ * @param {ToOptions} [options]
  * @returns {ToMarkdownExtension}
  */
-export function mathToMarkdown() {
+export function mathToMarkdown(options = {}) {
+  let single = options.singleDollarTextMath
+
+  if (single === null || single === undefined) {
+    single = true
+  }
+
   inlineMath.peek = inlineMathPeek
 
   return {
     unsafe: [
       {character: '\r', inConstruct: ['mathFlowMeta']},
       {character: '\r', inConstruct: ['mathFlowMeta']},
-      {character: '$', inConstruct: ['mathFlowMeta', 'phrasing']},
+      single
+        ? {character: '$', inConstruct: ['mathFlowMeta', 'phrasing']}
+        : {
+            character: '$',
+            after: '\\$',
+            inConstruct: ['mathFlowMeta', 'phrasing']
+          },
       {atBreak: true, character: '$', after: '\\$'}
     ],
     handlers: {math, inlineMath}
@@ -165,6 +185,8 @@ export function mathToMarkdown() {
     const value = node.value || ''
     let size = 1
     let pad = ''
+
+    if (!single) size++
 
     // If there is a single dollar sign on its own in the math, use a fence of
     // two.
