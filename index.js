@@ -10,173 +10,187 @@
 import {longestStreak} from 'longest-streak'
 import {safe} from 'mdast-util-to-markdown/lib/util/safe.js'
 
-/** @type {FromMarkdownExtension} */
-export const mathFromMarkdown = {
-  enter: {
-    mathFlow: enterMathFlow,
-    mathFlowFenceMeta: enterMathFlowMeta,
-    mathText: enterMathText
-  },
-  exit: {
-    mathFlow: exitMathFlow,
-    mathFlowFence: exitMathFlowFence,
-    mathFlowFenceMeta: exitMathFlowMeta,
-    mathFlowValue: exitMathData,
-    mathText: exitMathText,
-    mathTextData: exitMathData
+/**
+ * @returns {FromMarkdownExtension}
+ */
+export function mathFromMarkdown() {
+  return {
+    enter: {
+      mathFlow: enterMathFlow,
+      mathFlowFenceMeta: enterMathFlowMeta,
+      mathText: enterMathText
+    },
+    exit: {
+      mathFlow: exitMathFlow,
+      mathFlowFence: exitMathFlowFence,
+      mathFlowFenceMeta: exitMathFlowMeta,
+      mathFlowValue: exitMathData,
+      mathText: exitMathText,
+      mathTextData: exitMathData
+    }
   }
-}
 
-/** @type {ToMarkdownExtension} */
-export const mathToMarkdown = {
-  unsafe: [
-    {character: '\r', inConstruct: ['mathFlowMeta']},
-    {character: '\r', inConstruct: ['mathFlowMeta']},
-    {character: '$', inConstruct: ['mathFlowMeta', 'phrasing']},
-    {atBreak: true, character: '$', after: '\\$'}
-  ],
-  handlers: {math, inlineMath}
-}
+  /** @type {FromMarkdownHandle} */
+  function enterMathFlow(token) {
+    this.enter(
+      {
+        type: 'math',
+        meta: null,
+        value: '',
+        data: {
+          hName: 'div',
+          hProperties: {className: ['math', 'math-display']},
+          hChildren: [{type: 'text', value: ''}]
+        }
+      },
+      token
+    )
+  }
 
-inlineMath.peek = inlineMathPeek
+  /** @type {FromMarkdownHandle} */
+  function enterMathFlowMeta() {
+    this.buffer()
+  }
 
-/** @type {FromMarkdownHandle} */
-function enterMathFlow(token) {
-  this.enter(
-    {
-      type: 'math',
-      meta: null,
-      value: '',
-      data: {
-        hName: 'div',
-        hProperties: {className: ['math', 'math-display']},
-        hChildren: [{type: 'text', value: ''}]
-      }
-    },
-    token
-  )
-}
+  /** @type {FromMarkdownHandle} */
+  function exitMathFlowMeta() {
+    const data = this.resume()
+    const node = /** @type {Math} */ (this.stack[this.stack.length - 1])
+    node.meta = data
+  }
 
-/** @type {FromMarkdownHandle} */
-function enterMathFlowMeta() {
-  this.buffer()
-}
+  /** @type {FromMarkdownHandle} */
+  function exitMathFlowFence() {
+    // Exit if this is the closing fence.
+    if (this.getData('mathFlowInside')) return
+    this.buffer()
+    this.setData('mathFlowInside', true)
+  }
 
-/** @type {FromMarkdownHandle} */
-function exitMathFlowMeta() {
-  const data = this.resume()
-  const node = /** @type {Math} */ (this.stack[this.stack.length - 1])
-  node.meta = data
-}
+  /** @type {FromMarkdownHandle} */
+  function exitMathFlow(token) {
+    const data = this.resume().replace(/^(\r?\n|\r)|(\r?\n|\r)$/g, '')
+    const node = /** @type {Math} */ (this.exit(token))
+    node.value = data
+    // @ts-expect-error: we defined it.
+    node.data.hChildren[0].value = data
+    this.setData('mathFlowInside')
+  }
 
-/** @type {FromMarkdownHandle} */
-function exitMathFlowFence() {
-  // Exit if this is the closing fence.
-  if (this.getData('mathFlowInside')) return
-  this.buffer()
-  this.setData('mathFlowInside', true)
-}
+  /** @type {FromMarkdownHandle} */
+  function enterMathText(token) {
+    this.enter(
+      {
+        type: 'inlineMath',
+        value: '',
+        data: {
+          hName: 'span',
+          hProperties: {className: ['math', 'math-inline']},
+          hChildren: [{type: 'text', value: ''}]
+        }
+      },
+      token
+    )
+    this.buffer()
+  }
 
-/** @type {FromMarkdownHandle} */
-function exitMathFlow(token) {
-  const data = this.resume().replace(/^(\r?\n|\r)|(\r?\n|\r)$/g, '')
-  const node = /** @type {Math} */ (this.exit(token))
-  node.value = data
-  // @ts-expect-error: we defined it.
-  node.data.hChildren[0].value = data
-  this.setData('mathFlowInside')
-}
+  /** @type {FromMarkdownHandle} */
+  function exitMathText(token) {
+    const data = this.resume()
+    const node = /** @type {Math} */ (this.exit(token))
+    node.value = data
+    // @ts-expect-error: we defined it.
+    node.data.hChildren[0].value = data
+  }
 
-/** @type {FromMarkdownHandle} */
-function enterMathText(token) {
-  this.enter(
-    {
-      type: 'inlineMath',
-      value: '',
-      data: {
-        hName: 'span',
-        hProperties: {className: ['math', 'math-inline']},
-        hChildren: [{type: 'text', value: ''}]
-      }
-    },
-    token
-  )
-  this.buffer()
-}
-
-/** @type {FromMarkdownHandle} */
-function exitMathText(token) {
-  const data = this.resume()
-  const node = /** @type {Math} */ (this.exit(token))
-  node.value = data
-  // @ts-expect-error: we defined it.
-  node.data.hChildren[0].value = data
-}
-
-/** @type {FromMarkdownHandle} */
-function exitMathData(token) {
-  this.config.enter.data.call(this, token)
-  this.config.exit.data.call(this, token)
+  /** @type {FromMarkdownHandle} */
+  function exitMathData(token) {
+    this.config.enter.data.call(this, token)
+    this.config.exit.data.call(this, token)
+  }
 }
 
 /**
- * @type {ToMarkdownHandle}
- * @param {Math} node
+ * @returns {ToMarkdownExtension}
  */
-function math(node, _, context) {
-  const raw = node.value || ''
-  const fence = '$'.repeat(Math.max(longestStreak(raw, '$') + 1, 2))
-  const exit = context.enter('mathFlow')
-  let value = fence
+export function mathToMarkdown() {
+  inlineMath.peek = inlineMathPeek
 
-  if (node.meta) {
-    const subexit = context.enter('mathFlowMeta')
-    value += safe(context, node.meta, {before: '$', after: ' ', encode: ['$']})
-    subexit()
+  return {
+    unsafe: [
+      {character: '\r', inConstruct: ['mathFlowMeta']},
+      {character: '\r', inConstruct: ['mathFlowMeta']},
+      {character: '$', inConstruct: ['mathFlowMeta', 'phrasing']},
+      {atBreak: true, character: '$', after: '\\$'}
+    ],
+    handlers: {math, inlineMath}
   }
 
-  value += '\n'
+  /**
+   * @type {ToMarkdownHandle}
+   * @param {Math} node
+   */
+  function math(node, _, context) {
+    const raw = node.value || ''
+    const fence = '$'.repeat(Math.max(longestStreak(raw, '$') + 1, 2))
+    const exit = context.enter('mathFlow')
+    let value = fence
 
-  if (raw) {
-    value += raw + '\n'
+    if (node.meta) {
+      const subexit = context.enter('mathFlowMeta')
+      value += safe(context, node.meta, {
+        before: '$',
+        after: ' ',
+        encode: ['$']
+      })
+      subexit()
+    }
+
+    value += '\n'
+
+    if (raw) {
+      value += raw + '\n'
+    }
+
+    value += fence
+    exit()
+    return value
   }
 
-  value += fence
-  exit()
-  return value
-}
+  /**
+   * @type {ToMarkdownHandle}
+   * @param {InlineMath} node
+   */
+  function inlineMath(node) {
+    const value = node.value || ''
+    let size = 1
+    let pad = ''
 
-/**
- * @type {ToMarkdownHandle}
- * @param {InlineMath} node
- */
-function inlineMath(node) {
-  const value = node.value || ''
-  let size = 1
-  let pad = ''
+    // If there is a single dollar sign on its own in the math, use a fence of
+    // two.
+    // If there are two in a row, use one.
+    while (
+      new RegExp('(^|[^$])' + '\\$'.repeat(size) + '([^$]|$)').test(value)
+    ) {
+      size++
+    }
 
-  // If there is a single dollar sign on its own in the math, use a fence of
-  // two.
-  // If there are two in a row, use one.
-  while (new RegExp('(^|[^$])' + '\\$'.repeat(size) + '([^$]|$)').test(value)) {
-    size++
+    // If this is not just spaces or eols (tabs don’t count), and either the first
+    // or last character are a space, eol, or dollar sign, then pad with spaces.
+    if (
+      /[^ \r\n]/.test(value) &&
+      (/[ \r\n$]/.test(value.charAt(0)) ||
+        /[ \r\n$]/.test(value.charAt(value.length - 1)))
+    ) {
+      pad = ' '
+    }
+
+    const sequence = '$'.repeat(size)
+    return sequence + pad + value + pad + sequence
   }
 
-  // If this is not just spaces or eols (tabs don’t count), and either the first
-  // or last character are a space, eol, or dollar sign, then pad with spaces.
-  if (
-    /[^ \r\n]/.test(value) &&
-    (/[ \r\n$]/.test(value.charAt(0)) ||
-      /[ \r\n$]/.test(value.charAt(value.length - 1)))
-  ) {
-    pad = ' '
+  /** @type {ToMarkdownHandle} */
+  function inlineMathPeek() {
+    return '$'
   }
-
-  const sequence = '$'.repeat(size)
-  return sequence + pad + value + pad + sequence
-}
-
-/** @type {ToMarkdownHandle} */
-function inlineMathPeek() {
-  return '$'
 }

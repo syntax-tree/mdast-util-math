@@ -43,10 +43,10 @@ L = \frac{1}{2} \rho v^2 S C_L
 $$
 ```
 
-And our script, `example.js`, looks as follows:
+And our module, `example.js`, looks as follows:
 
 ```js
-import fs from 'fs'
+import fs from 'node:fs'
 import {fromMarkdown} from 'mdast-util-from-markdown'
 import {toMarkdown} from 'mdast-util-to-markdown'
 import {math} from 'micromark-extension-math'
@@ -55,13 +55,13 @@ import {mathFromMarkdown, mathToMarkdown} from 'mdast-util-math'
 const doc = fs.readFileSync('example.md')
 
 const tree = fromMarkdown(doc, {
-  extensions: [math],
-  mdastExtensions: [mathFromMarkdown]
+  extensions: [math()],
+  mdastExtensions: [mathFromMarkdown()]
 })
 
 console.log(tree)
 
-const out = toMarkdown(tree, {extensions: [mathToMarkdown]})
+const out = toMarkdown(tree, {extensions: [mathToMarkdown()]})
 
 console.log(out)
 ```
@@ -97,16 +97,16 @@ $$
 
 ## API
 
-This package exports the following identifier: `mathFromMarkdown`,
+This package exports the following identifiers: `mathFromMarkdown`,
 `mathToMarkdown`.
 There is no default export.
 
-### `mathFromMarkdown`
+### `mathFromMarkdown()`
 
-### `mathToMarkdown`
+### `mathToMarkdown()`
 
 Support math.
-These exports are extensions, respectively for
+These exports are functions that create extensions, respectively for
 [`mdast-util-from-markdown`][from-markdown] and
 [`mdast-util-to-markdown`][to-markdown].
 
