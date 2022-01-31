@@ -16,6 +16,7 @@
 
 import {longestStreak} from 'longest-streak'
 import {safe} from 'mdast-util-to-markdown/lib/util/safe.js'
+import {track} from 'mdast-util-to-markdown/lib/util/track.js'
 
 /**
  * @returns {FromMarkdownExtension}
@@ -150,29 +151,33 @@ export function mathToMarkdown(options = {}) {
    * @type {ToMarkdownHandle}
    * @param {Math} node
    */
-  function math(node, _, context) {
+  function math(node, _, context, safeOptions) {
     const raw = node.value || ''
-    const fence = '$'.repeat(Math.max(longestStreak(raw, '$') + 1, 2))
+    const sequence = '$'.repeat(Math.max(longestStreak(raw, '$') + 1, 2))
     const exit = context.enter('mathFlow')
-    let value = fence
+    const tracker = track(safeOptions)
+    let value = tracker.move(sequence)
 
     if (node.meta) {
       const subexit = context.enter('mathFlowMeta')
-      value += safe(context, node.meta, {
-        before: '$',
-        after: ' ',
-        encode: ['$']
-      })
+      value += tracker.move(
+        safe(context, node.meta, {
+          ...tracker.current(),
+          before: value,
+          after: ' ',
+          encode: ['$']
+        })
+      )
       subexit()
     }
 
-    value += '\n'
+    value += tracker.move('\n')
 
     if (raw) {
-      value += raw + '\n'
+      value += tracker.move(raw + '\n')
     }
 
-    value += fence
+    value += tracker.move(sequence)
     exit()
     return value
   }
