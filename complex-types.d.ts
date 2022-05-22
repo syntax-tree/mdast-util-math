@@ -2,7 +2,6 @@ import type {Literal} from 'mdast'
 
 export interface Math extends Literal {
   type: 'math'
-  lang?: string | null
   meta?: string | null
 }
 
