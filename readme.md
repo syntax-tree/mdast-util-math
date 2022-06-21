@@ -181,7 +181,7 @@ When mdast is turned into hast the math nodes are turned into
 
 The following interfaces are added to **[mdast][]** by this utility.
 
-#### Nodes
+### Nodes
 
 #### `Math`
 
@@ -223,7 +223,7 @@ Yields:
 }
 ```
 
-### `InlineMath`
+#### `InlineMath`
 
 ```idl
 interface InlineMath <: Literal {
