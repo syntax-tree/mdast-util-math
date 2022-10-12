@@ -21,7 +21,7 @@
     *   [`mathToMarkdown(options?)`](#mathtomarkdownoptions)
 *   [HTML](#html)
 *   [Syntax tree](#syntax-tree)
-    *   [`InlineMath`](#inlinemath)
+    *   [Nodes](#nodes)
     *   [Content model](#content-model)
 *   [Types](#types)
 *   [Compatibility](#compatibility)
