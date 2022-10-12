@@ -7,6 +7,7 @@
  * @typedef {import('./complex-types').InlineMath} InlineMath
  *
  * @typedef ToOptions
+ *   Configuration to turn an AST into markdown.
  * @property {boolean} [singleDollarTextMath=true]
  *   Whether to support math (text) with a single dollar (`boolean`, default:
  *   `true`).
@@ -46,9 +47,16 @@ export function mathFromMarkdown() {
         meta: null,
         value: '',
         data: {
-          hName: 'div',
-          hProperties: {className: ['math', 'math-display']},
-          hChildren: [{type: 'text', value: ''}]
+          hName: 'pre',
+          hProperties: {},
+          hChildren: [
+            {
+              type: 'element',
+              tagName: 'code',
+              properties: {className: ['language-math', 'math-display']},
+              children: [{type: 'text', value: ''}]
+            }
+          ]
         }
       },
       token
@@ -81,7 +89,7 @@ export function mathFromMarkdown() {
     const node = /** @type {Math} */ (this.exit(token))
     node.value = data
     // @ts-expect-error: we defined it.
-    node.data.hChildren[0].value = data
+    node.data.hChildren[0].children[0].value = data
     this.setData('mathFlowInside')
   }
 
@@ -92,8 +100,8 @@ export function mathFromMarkdown() {
         type: 'inlineMath',
         value: '',
         data: {
-          hName: 'span',
-          hProperties: {className: ['math', 'math-inline']},
+          hName: 'code',
+          hProperties: {className: ['language-math', 'math-inline']},
           hChildren: [{type: 'text', value: ''}]
         }
       },

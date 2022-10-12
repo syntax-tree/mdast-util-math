@@ -53,8 +53,8 @@ When working with `mdast-util-from-markdown`, you must combine this package with
 This utility adds [fields on nodes][fields] so that the utility responsible for
 turning mdast (markdown) nodes into hast (HTML) nodes,
 [`mdast-util-to-hast`][mdast-util-to-hast], turns text (inline) math nodes into
-`<span class="math math-inline">…</span>` and flow (block) math nodes into
-`<div class="math math-display">…</div>`.
+`<code class="language-math math-inline">…</code>` and flow (block) math nodes
+into `<pre><code class="language-math math-display">…</code></pre>`.
 
 ## Install
 
@@ -174,8 +174,8 @@ Single dollars work in Pandoc and many other places, but often interfere with
 
 This plugin integrates with [`mdast-util-to-hast`][mdast-util-to-hast].
 When mdast is turned into hast the math nodes are turned into
-`<span class="math math-inline">…</span>` and
-`<div class="math math-display">…</div>` elements.
+`<code class="language-math math-inline">…</code>` and
+`<pre><code class="language-math math-display">…</code></pre>`.
 
 ## Syntax tree
 

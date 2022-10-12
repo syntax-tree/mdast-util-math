@@ -28,8 +28,8 @@ test('markdown -> mdast', (t) => {
               type: 'inlineMath',
               value: 'b',
               data: {
-                hName: 'span',
-                hProperties: {className: ['math', 'math-inline']},
+                hName: 'code',
+                hProperties: {className: ['language-math', 'math-inline']},
                 hChildren: [{type: 'text', value: 'b'}]
               },
               position: {
@@ -70,9 +70,16 @@ test('markdown -> mdast', (t) => {
       meta: null,
       value: 'a',
       data: {
-        hName: 'div',
-        hProperties: {className: ['math', 'math-display']},
-        hChildren: [{type: 'text', value: 'a'}]
+        hName: 'pre',
+        hProperties: {},
+        hChildren: [
+          {
+            type: 'element',
+            tagName: 'code',
+            properties: {className: ['language-math', 'math-display']},
+            children: [{type: 'text', value: 'a'}]
+          }
+        ]
       },
       position: {
         start: {line: 1, column: 1, offset: 0},
@@ -92,9 +99,16 @@ test('markdown -> mdast', (t) => {
       meta: 'a&b&c',
       value: '',
       data: {
-        hName: 'div',
-        hProperties: {className: ['math', 'math-display']},
-        hChildren: [{type: 'text', value: ''}]
+        hName: 'pre',
+        hProperties: {},
+        hChildren: [
+          {
+            type: 'element',
+            tagName: 'code',
+            properties: {className: ['language-math', 'math-display']},
+            children: [{type: 'text', value: ''}]
+          }
+        ]
       },
       position: {
         start: {line: 1, column: 1, offset: 0},
@@ -116,8 +130,8 @@ test('markdown -> mdast', (t) => {
           type: 'inlineMath',
           value: 'a\nb\nb',
           data: {
-            hName: 'span',
-            hProperties: {className: ['math', 'math-inline']},
+            hName: 'code',
+            hProperties: {className: ['language-math', 'math-inline']},
             hChildren: [{type: 'text', value: 'a\nb\nb'}]
           },
           position: {
