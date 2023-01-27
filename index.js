@@ -158,11 +158,8 @@ export function mathToMarkdown(options = {}) {
 
   return {
     unsafe: [
-      // @ts-expect-error: To do: use context map.
       {character: '\r', inConstruct: ['mathFlowMeta']},
-      // @ts-expect-error: To do: use context map.
       {character: '\r', inConstruct: ['mathFlowMeta']},
-      // @ts-expect-error: To do: use context map.
       single
         ? {character: '$', inConstruct: ['mathFlowMeta', 'phrasing']}
         : {
@@ -182,13 +179,11 @@ export function mathToMarkdown(options = {}) {
   function math(node, _, context, safeOptions) {
     const raw = node.value || ''
     const sequence = '$'.repeat(Math.max(longestStreak(raw, '$') + 1, 2))
-    // @ts-expect-error: To do: use context map.
     const exit = context.enter('mathFlow')
     const tracker = track(safeOptions)
     let value = tracker.move(sequence)
 
     if (node.meta) {
-      // @ts-expect-error: To do: use context map.
       const subexit = context.enter('mathFlowMeta')
       value += tracker.move(
         safe(context, node.meta, {
