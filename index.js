@@ -4,8 +4,8 @@
  * @typedef {import('mdast-util-from-markdown').Handle} FromMarkdownHandle
  * @typedef {import('mdast-util-to-markdown').Options} ToMarkdownExtension
  * @typedef {import('mdast-util-to-markdown').Handle} ToMarkdownHandle
- * @typedef {import('./complex-types').Math} Math
- * @typedef {import('./complex-types').InlineMath} InlineMath
+ * @typedef {import('./complex-types.js').Math} Math
+ * @typedef {import('./complex-types.js').InlineMath} InlineMath
  *
  * @typedef ToOptions
  * @property {boolean} [singleDollarTextMath=true]
