@@ -1,4 +1,5 @@
 /**
+ * @typedef {import('mdast-util-from-markdown').CompileContext} CompileContext
  * @typedef {import('mdast-util-from-markdown').Extension} FromMarkdownExtension
  * @typedef {import('mdast-util-from-markdown').Handle} FromMarkdownHandle
  * @typedef {import('mdast-util-to-markdown').Options} ToMarkdownExtension
@@ -38,7 +39,10 @@ export function mathFromMarkdown() {
     }
   }
 
-  /** @type {FromMarkdownHandle} */
+  /**
+   * @this {CompileContext}
+   * @type {FromMarkdownHandle}
+   */
   function enterMathFlow(token) {
     this.enter(
       {
@@ -55,19 +59,28 @@ export function mathFromMarkdown() {
     )
   }
 
-  /** @type {FromMarkdownHandle} */
+  /**
+   * @this {CompileContext}
+   * @type {FromMarkdownHandle}
+   */
   function enterMathFlowMeta() {
     this.buffer()
   }
 
-  /** @type {FromMarkdownHandle} */
+  /**
+   * @this {CompileContext}
+   * @type {FromMarkdownHandle}
+   */
   function exitMathFlowMeta() {
     const data = this.resume()
     const node = /** @type {Math} */ (this.stack[this.stack.length - 1])
     node.meta = data
   }
 
-  /** @type {FromMarkdownHandle} */
+  /**
+   * @this {CompileContext}
+   * @type {FromMarkdownHandle}
+   */
   function exitMathFlowFence() {
     // Exit if this is the closing fence.
     if (this.getData('mathFlowInside')) return
@@ -75,7 +88,10 @@ export function mathFromMarkdown() {
     this.setData('mathFlowInside', true)
   }
 
-  /** @type {FromMarkdownHandle} */
+  /**
+   * @this {CompileContext}
+   * @type {FromMarkdownHandle}
+   */
   function exitMathFlow(token) {
     const data = this.resume().replace(/^(\r?\n|\r)|(\r?\n|\r)$/g, '')
     const node = /** @type {Math} */ (this.exit(token))
@@ -85,7 +101,10 @@ export function mathFromMarkdown() {
     this.setData('mathFlowInside')
   }
 
-  /** @type {FromMarkdownHandle} */
+  /**
+   * @this {CompileContext}
+   * @type {FromMarkdownHandle}
+   */
   function enterMathText(token) {
     this.enter(
       {
@@ -102,7 +121,10 @@ export function mathFromMarkdown() {
     this.buffer()
   }
 
-  /** @type {FromMarkdownHandle} */
+  /**
+   * @this {CompileContext}
+   * @type {FromMarkdownHandle}
+   */
   function exitMathText(token) {
     const data = this.resume()
     const node = /** @type {Math} */ (this.exit(token))
@@ -111,7 +133,10 @@ export function mathFromMarkdown() {
     node.data.hChildren[0].value = data
   }
 
-  /** @type {FromMarkdownHandle} */
+  /**
+   * @this {CompileContext}
+   * @type {FromMarkdownHandle}
+   */
   function exitMathData(token) {
     this.config.enter.data.call(this, token)
     this.config.exit.data.call(this, token)
@@ -133,8 +158,11 @@ export function mathToMarkdown(options = {}) {
 
   return {
     unsafe: [
+      // @ts-expect-error: To do: use context map.
       {character: '\r', inConstruct: ['mathFlowMeta']},
+      // @ts-expect-error: To do: use context map.
       {character: '\r', inConstruct: ['mathFlowMeta']},
+      // @ts-expect-error: To do: use context map.
       single
         ? {character: '$', inConstruct: ['mathFlowMeta', 'phrasing']}
         : {
@@ -154,11 +182,13 @@ export function mathToMarkdown(options = {}) {
   function math(node, _, context, safeOptions) {
     const raw = node.value || ''
     const sequence = '$'.repeat(Math.max(longestStreak(raw, '$') + 1, 2))
+    // @ts-expect-error: To do: use context map.
     const exit = context.enter('mathFlow')
     const tracker = track(safeOptions)
     let value = tracker.move(sequence)
 
     if (node.meta) {
+      // @ts-expect-error: To do: use context map.
       const subexit = context.enter('mathFlowMeta')
       value += tracker.move(
         safe(context, node.meta, {
