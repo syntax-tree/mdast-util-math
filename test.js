@@ -190,6 +190,33 @@ test('mdast -> markdown', (t) => {
     'should serialize math (text) w/ padding when starting in a dollar sign'
   )
 
+  t.equal(
+    toMarkdown(
+      {type: 'inlineMath', value: ' a '},
+      {extensions: [mathToMarkdown()]}
+    ),
+    '$  a  $\n',
+    'should pad w/ a space if the value starts and ends w/ a space'
+  )
+
+  t.equal(
+    toMarkdown(
+      {type: 'inlineMath', value: ' a'},
+      {extensions: [mathToMarkdown()]}
+    ),
+    '$ a$\n',
+    'should not pad w/ spaces if the value ends w/ a non-space'
+  )
+
+  t.equal(
+    toMarkdown(
+      {type: 'inlineMath', value: 'a '},
+      {extensions: [mathToMarkdown()]}
+    ),
+    '$a $\n',
+    'should not pad w/ spaces if the value starts w/ a non-space'
+  )
+
   t.deepEqual(
     toMarkdown({type: 'math', value: 'a'}, {extensions: [mathToMarkdown()]}),
     '$$\na\n$$\n',
@@ -286,7 +313,7 @@ test('mdast -> markdown', (t) => {
       {type: 'math', meta: 'a\rb\nc', value: ''},
       {extensions: [mathToMarkdown()]}
     ),
-    '$$a&#xD;b\nc\n$$\n',
+    '$$a&#xD;b&#xA;c\n$$\n',
     'should escape `\\r`, `\\n` when in `meta` of math (flow)'
   )
 
@@ -297,6 +324,51 @@ test('mdast -> markdown', (t) => {
     ),
     '$$a&#x24;b\n$$\n',
     'should escape `$` when in `meta` of math (flow)'
+  )
+
+  t.equal(
+    toMarkdown(
+      {type: 'inlineMath', value: 'a\n- b'},
+      {extensions: [mathToMarkdown()]}
+    ),
+    '$a - b$\n',
+    'should prevent breaking out of code (-)'
+  )
+
+  t.equal(
+    toMarkdown(
+      {type: 'inlineMath', value: 'a\n#'},
+      {extensions: [mathToMarkdown()]}
+    ),
+    '$a #$\n',
+    'should prevent breaking out of code (#)'
+  )
+
+  t.equal(
+    toMarkdown(
+      {type: 'inlineMath', value: 'a\n1. '},
+      {extensions: [mathToMarkdown()]}
+    ),
+    '$a 1. $\n',
+    'should prevent breaking out of code (\\d\\.)'
+  )
+
+  t.equal(
+    toMarkdown(
+      {type: 'inlineMath', value: 'a\r- b'},
+      {extensions: [mathToMarkdown()]}
+    ),
+    '$a - b$\n',
+    'should prevent breaking out of code (cr)'
+  )
+
+  t.equal(
+    toMarkdown(
+      {type: 'inlineMath', value: 'a\r\n- b'},
+      {extensions: [mathToMarkdown()]}
+    ),
+    '$a - b$\n',
+    'should prevent breaking out of code (crlf)'
   )
 
   t.end()

@@ -167,6 +167,7 @@ Configuration (optional).
 
 Whether to support text math (inline) with a single dollar (`boolean`, default:
 `true`).
+
 Single dollars work in Pandoc and many other places, but often interfere with
 “normal” dollars in text.
 
