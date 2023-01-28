@@ -4,14 +4,30 @@ export {mathFromMarkdown, mathToMarkdown} from './lib/index.js'
 
 export type {ToOptions} from './lib/index.js'
 
+/**
+ * Math (flow).
+ */
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface Math extends Literal {
+  /**
+   * Node type.
+   */
   type: 'math'
-  meta?: string | null
+
+  /**
+   * Custom information relating to the node.
+   */
+  meta?: string | undefined | null
 }
 
+/**
+ * Math (text).
+ */
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface InlineMath extends Literal {
+  /**
+   * Node type.
+   */
   type: 'inlineMath'
 }
 

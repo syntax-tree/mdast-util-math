@@ -19,7 +19,11 @@
 *   [API](#api)
     *   [`mathFromMarkdown()`](#mathfrommarkdown)
     *   [`mathToMarkdown(options?)`](#mathtomarkdownoptions)
+    *   [`InlineMath`](#inlinemath)
+    *   [`Math`](#math)
+    *   [`ToOptions`](#tooptions)
 *   [HTML](#html)
+*   [Syntax](#syntax)
 *   [Syntax tree](#syntax-tree)
     *   [Nodes](#nodes)
     *   [Content model](#content-model)
@@ -31,15 +35,15 @@
 
 ## What is this?
 
-This package contains extensions that add support for math to
-[`mdast-util-from-markdown`][mdast-util-from-markdown] and
-[`mdast-util-to-markdown`][mdast-util-to-markdown].
+This package contains two extensions that add support for math syntax in
+markdown to [mdast][].
+These extensions plug into
+[`mdast-util-from-markdown`][mdast-util-from-markdown] (to support parsing
+math in markdown into a syntax tree) and
+[`mdast-util-to-markdown`][mdast-util-to-markdown] (to support serializing
+math in syntax trees to markdown).
 
 ## When to use this
-
-These tools are all rather low-level.
-In most cases, you’d want to use [`remark-math`][remark-math] with remark
-instead.
 
 This project is useful when you want to support math in markdown.
 Extending markdown with a syntax extension makes the markdown less portable.
@@ -47,8 +51,19 @@ LaTeX equations are also quite hard.
 But this mechanism works well when you want authors, that have some LaTeX
 experience, to be able to embed rich diagrams of math in scientific text.
 
-When working with `mdast-util-from-markdown`, you must combine this package with
-[`micromark-extension-math`][extension].
+You can use these extensions when you are working with
+`mdast-util-from-markdown` and `mdast-util-to-markdown` already.
+
+When working with `mdast-util-from-markdown`, you must combine this package
+with [`micromark-extension-math`][micromark-extension-math].
+
+When you don’t need a syntax tree, you can use [`micromark`][micromark]
+directly with
+[`micromark-extension-math`][micromark-extension-math].
+
+All these packages are used [`remark-math`][remark-math], which
+focusses on making it easier to transform content by abstracting these
+internals away.
 
 This utility adds [fields on nodes][fields] so that the utility responsible for
 turning mdast (markdown) nodes into hast (HTML) nodes,
@@ -59,7 +74,7 @@ turning mdast (markdown) nodes into hast (HTML) nodes,
 ## Install
 
 This package is [ESM only][esm].
-In Node.js (version 12.20+, 14.14+, or 16.0+), install with [npm][]:
+In Node.js (version 14.14+ and 16.0+), install with [npm][]:
 
 ```sh
 npm install mdast-util-math
@@ -146,30 +161,73 @@ $$
 
 ## API
 
-This package exports the identifiers `mathFromMarkdown` and `mathToMarkdown`.
+This package exports the identifiers [`mathFromMarkdown`][api-mathfrommarkdown]
+and [`mathToMarkdown`][api-mathtomarkdown].
 There is no default export.
 
 ### `mathFromMarkdown()`
 
-Function that can be called to get an extension for
-[`mdast-util-from-markdown`][mdast-util-from-markdown].
+Create an extension for [`mdast-util-from-markdown`][mdast-util-from-markdown].
+
+###### Returns
+
+Extension for `mdast-util-from-markdown`
+([`FromMarkdownExtension`][frommarkdownextension]).
 
 ### `mathToMarkdown(options?)`
 
-Function that can be called to get an extension for
-[`mdast-util-to-markdown`][mdast-util-to-markdown].
+Create an extension for [`mdast-util-to-markdown`][mdast-util-to-markdown].
 
-##### `options`
+###### Parameters
 
-Configuration (optional).
+*   `options` ([`ToOptions`][api-tooptions], optional)
+    — configuration
 
-###### `options.singleDollarTextMath`
+###### Returns
 
-Whether to support text math (inline) with a single dollar (`boolean`, default:
-`true`).
+Extension for `mdast-util-to-markdown`
+([`ToMarkdownExtension`][tomarkdownextension]).
 
-Single dollars work in Pandoc and many other places, but often interfere with
-“normal” dollars in text.
+### `InlineMath`
+
+Math (text) (TypeScript type).
+
+###### Type
+
+```ts
+import type {Literal} from 'mdast'
+
+interface InlineMath extends Literal {
+  type: 'inlineMath'
+}
+```
+
+### `Math`
+
+Math (flow) (TypeScript type).
+
+###### Type
+
+```ts
+import type {Literal} from 'mdast'
+
+interface Math extends Literal {
+  type: 'math'
+  meta?: string | undefined | null
+}
+```
+
+### `ToOptions`
+
+Configuration (TypeScript type).
+
+###### Fields
+
+*   `singleDollarTextMath` (`boolean`, default: `true`)
+    — whether to support math (text) with a single dollar.
+    Single dollars work in Pandoc and many other places, but often interfere
+    with “normal” dollars in text.
+    If you turn this off, you can still use two or more dollars for text math
 
 ## HTML
 
@@ -177,6 +235,10 @@ This plugin integrates with [`mdast-util-to-hast`][mdast-util-to-hast].
 When mdast is turned into hast the math nodes are turned into
 `<span class="math math-inline">…</span>` and
 `<div class="math math-display">…</div>` elements.
+
+## Syntax
+
+See [Syntax in `micromark-extension-frontmatter`][syntax].
 
 ## Syntax tree
 
@@ -193,14 +255,14 @@ interface Math <: Literal {
 }
 ```
 
-**Math** ([**Literal**][dfn-literal]) represents a block of math,
+**Math** (**[Literal][dfn-literal]**) represents a block of math,
 such as LaTeX mathematical expressions.
 
-**Math** can be used where [**flow**][dfn-flow-content] content is expected.
+**Math** can be used where **[flow][dfn-flow-content]** content is expected.
 Its content is represented by its `value` field.
 
-This node relates to the [**phrasing**][dfn-phrasing-content] content concept
-[**InlineMath**][dfn-inline-math].
+This node relates to the **[phrasing][dfn-phrasing-content]** content concept
+**[InlineMath][dfn-inline-math]**.
 
 A `meta` field can be present.
 It represents custom information relating to the node.
@@ -232,15 +294,15 @@ interface InlineMath <: Literal {
 }
 ```
 
-**InlineMath** ([**Literal**][dfn-literal]) represents a fragment of computer
+**InlineMath** (**[Literal][dfn-literal]**) represents a fragment of computer
 code, such as a file name, computer program, or anything a computer could parse.
 
-**InlineMath** can be used where [**phrasing**][dfn-phrasing-content] content
+**InlineMath** can be used where **[phrasing][dfn-phrasing-content]** content
 is expected.
 Its content is represented by its `value` field.
 
-This node relates to the [**flow**][dfn-flow-content] content concept
-[**Math**][dfn-math].
+This node relates to the **[flow][dfn-flow-content]** content concept
+**[Math][dfn-math]**.
 
 For example, the following markdown:
 
@@ -271,7 +333,8 @@ type PhrasingMath = InlineMath | PhrasingContent
 ## Types
 
 This package is fully typed with [TypeScript][].
-It exports the additional types `Math`, `InlineMath`, and `ToOptions`.
+It exports the additional types [`InlineMath`][api-inlinemath],
+[`Math`][api-math], and [`ToOptions`][api-tooptions].
 
 It also registers the node types with `@types/mdast`.
 If you’re working with the syntax tree, make sure to import this utility
@@ -296,7 +359,7 @@ visit(tree, (node) => {
 
 Projects maintained by the unified collective are compatible with all maintained
 versions of Node.js.
-As of now, that is Node.js 12.20+, 14.14+, and 16.0+.
+As of now, that is Node.js 14.14+ and 16.0+.
 Our projects sometimes work with older versions, but this is not guaranteed.
 
 This plugin works with `mdast-util-from-markdown` version 1+ and
@@ -304,9 +367,9 @@ This plugin works with `mdast-util-from-markdown` version 1+ and
 
 ## Related
 
-*   [`remarkjs/remark-math`][remark-math]
+*   [`remark-math`][remark-math]
     — remark plugin to support math
-*   [`micromark/micromark-extension-math`][extension]
+*   [`micromark-extension-math`][micromark-extension-math]
     — micromark extension to parse math
 
 ## Contribute
@@ -381,16 +444,34 @@ abide by its terms.
 
 [mdast-util-to-hast]: https://github.com/syntax-tree/mdast-util-to-hast
 
-[extension]: https://github.com/micromark/micromark-extension-math
+[micromark]: https://github.com/micromark/micromark
+
+[micromark-extension-math]: https://github.com/micromark/micromark-extension-math
+
+[syntax]: https://github.com/micromark/micromark-extension-math#syntax
 
 [fields]: https://github.com/syntax-tree/mdast-util-to-hast#fields-on-nodes
 
 [dfn-literal]: https://github.com/syntax-tree/mdast#literal
 
+[frommarkdownextension]: https://github.com/syntax-tree/mdast-util-from-markdown#extension
+
+[tomarkdownextension]: https://github.com/syntax-tree/mdast-util-to-markdown#options
+
+[api-mathfrommarkdown]: #mathfrommarkdown
+
+[api-mathtomarkdown]: #mathtomarkdownoptions
+
+[api-math]: #math
+
+[api-inlinemath]: #inlinemath
+
+[api-tooptions]: #tooptions
+
 [dfn-flow-content]: #flowcontent-math
 
 [dfn-phrasing-content]: #phrasingcontent-math
 
-[dfn-inline-math]: #inlinemath
+[dfn-inline-math]: #inlinemath-1
 
-[dfn-math]: #math
+[dfn-math]: #math-1
