@@ -1,11 +1,12 @@
-import test from 'tape'
+import assert from 'node:assert/strict'
+import test from 'node:test'
 import {fromMarkdown} from 'mdast-util-from-markdown'
 import {toMarkdown} from 'mdast-util-to-markdown'
 import {math} from 'micromark-extension-math'
 import {mathFromMarkdown, mathToMarkdown} from './index.js'
 
-test('markdown -> mdast', (t) => {
-  t.deepEqual(
+test('mathFromMarkdown', () => {
+  assert.deepEqual(
     fromMarkdown('a $b$ c', {
       extensions: [math()],
       mdastExtensions: [mathFromMarkdown()]
@@ -60,7 +61,7 @@ test('markdown -> mdast', (t) => {
     'should support math (text)'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     fromMarkdown('$$\na\n$$', {
       extensions: [math()],
       mdastExtensions: [mathFromMarkdown()]
@@ -82,7 +83,7 @@ test('markdown -> mdast', (t) => {
     'should support math (flow)'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     fromMarkdown('$$a&amp;b\\&c\n', {
       extensions: [math()],
       mdastExtensions: [mathFromMarkdown()]
@@ -104,7 +105,7 @@ test('markdown -> mdast', (t) => {
     'should support math (flow) w/ meta'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     fromMarkdown('$a\nb\nb$', {
       extensions: [math()],
       mdastExtensions: [mathFromMarkdown()]
@@ -133,12 +134,10 @@ test('markdown -> mdast', (t) => {
     },
     'should support math (text) w/ EOLs'
   )
-
-  t.end()
 })
 
-test('mdast -> markdown', (t) => {
-  t.deepEqual(
+test('mathToMarkdown', () => {
+  assert.deepEqual(
     toMarkdown(
       {type: 'inlineMath', value: 'a'},
       {extensions: [mathToMarkdown()]}
@@ -147,7 +146,7 @@ test('mdast -> markdown', (t) => {
     'should serialize math (text)'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {type: 'inlineMath', value: 'a'},
       {extensions: [mathToMarkdown({singleDollarTextMath: false})]}
@@ -156,14 +155,14 @@ test('mdast -> markdown', (t) => {
     'should serialize math (text) with at least 2 dollars w/ `singleDollarTextMath: false`'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     // @ts-expect-error: `value` missing.
     toMarkdown({type: 'inlineMath'}, {extensions: [mathToMarkdown()]}),
     '$$\n',
     'should serialize math (text) w/o `value`'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {type: 'inlineMath', value: 'a \\$ b'},
       {extensions: [mathToMarkdown()]}
@@ -172,7 +171,7 @@ test('mdast -> markdown', (t) => {
     'should serialize math (text) w/ two dollar signs when including a dollar'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {type: 'inlineMath', value: 'a \\$'},
       {extensions: [mathToMarkdown()]}
@@ -181,7 +180,7 @@ test('mdast -> markdown', (t) => {
     'should serialize math (text) w/ padding when ending in a dollar sign'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {type: 'inlineMath', value: '$ a'},
       {extensions: [mathToMarkdown()]}
@@ -190,7 +189,7 @@ test('mdast -> markdown', (t) => {
     'should serialize math (text) w/ padding when starting in a dollar sign'
   )
 
-  t.equal(
+  assert.equal(
     toMarkdown(
       {type: 'inlineMath', value: ' a '},
       {extensions: [mathToMarkdown()]}
@@ -199,7 +198,7 @@ test('mdast -> markdown', (t) => {
     'should pad w/ a space if the value starts and ends w/ a space'
   )
 
-  t.equal(
+  assert.equal(
     toMarkdown(
       {type: 'inlineMath', value: ' a'},
       {extensions: [mathToMarkdown()]}
@@ -208,7 +207,7 @@ test('mdast -> markdown', (t) => {
     'should not pad w/ spaces if the value ends w/ a non-space'
   )
 
-  t.equal(
+  assert.equal(
     toMarkdown(
       {type: 'inlineMath', value: 'a '},
       {extensions: [mathToMarkdown()]}
@@ -217,40 +216,40 @@ test('mdast -> markdown', (t) => {
     'should not pad w/ spaces if the value starts w/ a non-space'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown({type: 'math', value: 'a'}, {extensions: [mathToMarkdown()]}),
     '$$\na\n$$\n',
     'should serialize math (flow)'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     // @ts-expect-error: `value` missing.
     toMarkdown({type: 'math'}, {extensions: [mathToMarkdown()]}),
     '$$\n$$\n',
     'should serialize math (flow) w/o `value`'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     // @ts-expect-error: `value` missing.
     toMarkdown({type: 'math', meta: 'a'}, {extensions: [mathToMarkdown()]}),
     '$$a\n$$\n',
     'should serialize math (flow) w/ `meta`'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown({type: 'math', value: '$$'}, {extensions: [mathToMarkdown()]}),
     '$$$\n$$\n$$$\n',
     'should serialize math (flow) w/ more dollars than occur together in `value`'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     // @ts-expect-error: `value` missing.
     toMarkdown({type: 'math', meta: 'a'}, {extensions: [mathToMarkdown()]}),
     '$$a\n$$\n',
     'should serialize math (flow) w/ `meta`'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {type: 'paragraph', children: [{type: 'text', value: 'a $ b'}]},
       {extensions: [mathToMarkdown()]}
@@ -259,7 +258,7 @@ test('mdast -> markdown', (t) => {
     'should escape `$` in phrasing'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {type: 'paragraph', children: [{type: 'text', value: 'a $ b'}]},
       {extensions: [mathToMarkdown({singleDollarTextMath: false})]}
@@ -268,7 +267,7 @@ test('mdast -> markdown', (t) => {
     'should not escape a single dollar in phrasing w/ `singleDollarTextMath: false`'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {type: 'paragraph', children: [{type: 'text', value: 'a $$ b'}]},
       {extensions: [mathToMarkdown({singleDollarTextMath: false})]}
@@ -277,7 +276,7 @@ test('mdast -> markdown', (t) => {
     'should escape two dollars in phrasing w/ `singleDollarTextMath: false`'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {
         type: 'paragraph',
@@ -293,7 +292,7 @@ test('mdast -> markdown', (t) => {
     'should escape `$` around math (text)'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {
         type: 'definition',
@@ -308,7 +307,7 @@ test('mdast -> markdown', (t) => {
     'should not escape `$` at the start of a line'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {type: 'math', meta: 'a\rb\nc', value: ''},
       {extensions: [mathToMarkdown()]}
@@ -317,7 +316,7 @@ test('mdast -> markdown', (t) => {
     'should escape `\\r`, `\\n` when in `meta` of math (flow)'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {type: 'math', meta: 'a$b', value: ''},
       {extensions: [mathToMarkdown()]}
@@ -326,7 +325,7 @@ test('mdast -> markdown', (t) => {
     'should escape `$` when in `meta` of math (flow)'
   )
 
-  t.equal(
+  assert.equal(
     toMarkdown(
       {type: 'inlineMath', value: 'a\n- b'},
       {extensions: [mathToMarkdown()]}
@@ -335,7 +334,7 @@ test('mdast -> markdown', (t) => {
     'should prevent breaking out of code (-)'
   )
 
-  t.equal(
+  assert.equal(
     toMarkdown(
       {type: 'inlineMath', value: 'a\n#'},
       {extensions: [mathToMarkdown()]}
@@ -344,7 +343,7 @@ test('mdast -> markdown', (t) => {
     'should prevent breaking out of code (#)'
   )
 
-  t.equal(
+  assert.equal(
     toMarkdown(
       {type: 'inlineMath', value: 'a\n1. '},
       {extensions: [mathToMarkdown()]}
@@ -353,7 +352,7 @@ test('mdast -> markdown', (t) => {
     'should prevent breaking out of code (\\d\\.)'
   )
 
-  t.equal(
+  assert.equal(
     toMarkdown(
       {type: 'inlineMath', value: 'a\r- b'},
       {extensions: [mathToMarkdown()]}
@@ -362,7 +361,7 @@ test('mdast -> markdown', (t) => {
     'should prevent breaking out of code (cr)'
   )
 
-  t.equal(
+  assert.equal(
     toMarkdown(
       {type: 'inlineMath', value: 'a\r\n- b'},
       {extensions: [mathToMarkdown()]}
@@ -370,6 +369,4 @@ test('mdast -> markdown', (t) => {
     '$a - b$\n',
     'should prevent breaking out of code (crlf)'
   )
-
-  t.end()
 })
