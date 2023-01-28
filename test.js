@@ -4,6 +4,15 @@ import {fromMarkdown} from 'mdast-util-from-markdown'
 import {toMarkdown} from 'mdast-util-to-markdown'
 import {math} from 'micromark-extension-math'
 import {mathFromMarkdown, mathToMarkdown} from './index.js'
+import * as mod from './index.js'
+
+test('core', () => {
+  assert.deepEqual(
+    Object.keys(mod).sort(),
+    ['mathFromMarkdown', 'mathToMarkdown'],
+    'should expose the public api'
+  )
+})
 
 test('mathFromMarkdown', () => {
   assert.deepEqual(
