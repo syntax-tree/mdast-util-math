@@ -74,7 +74,7 @@ turning mdast (markdown) nodes into hast (HTML) nodes,
 ## Install
 
 This package is [ESM only][esm].
-In Node.js (version 14.14+ and 16.0+), install with [npm][]:
+In Node.js (version 16+), install with [npm][]:
 
 ```sh
 npm install mdast-util-math
@@ -110,10 +110,10 @@ $$
 
 ```js
 import fs from 'node:fs/promises'
-import {fromMarkdown} from 'mdast-util-from-markdown'
-import {toMarkdown} from 'mdast-util-to-markdown'
 import {math} from 'micromark-extension-math'
+import {fromMarkdown} from 'mdast-util-from-markdown'
 import {mathFromMarkdown, mathToMarkdown} from 'mdast-util-math'
+import {toMarkdown} from 'mdast-util-to-markdown'
 
 const doc = await fs.readFile('example.md')
 
@@ -161,8 +161,9 @@ $$
 
 ## API
 
-This package exports the identifiers [`mathFromMarkdown`][api-mathfrommarkdown]
-and [`mathToMarkdown`][api-mathtomarkdown].
+This package exports the identifiers
+[`mathFromMarkdown`][api-math-from-markdown]
+and [`mathToMarkdown`][api-math-to-markdown].
 There is no default export.
 
 ### `mathFromMarkdown()`
@@ -172,7 +173,7 @@ Create an extension for [`mdast-util-from-markdown`][mdast-util-from-markdown].
 ###### Returns
 
 Extension for `mdast-util-from-markdown`
-([`FromMarkdownExtension`][frommarkdownextension]).
+([`FromMarkdownExtension`][from-markdown-extension]).
 
 ### `mathToMarkdown(options?)`
 
@@ -180,13 +181,13 @@ Create an extension for [`mdast-util-to-markdown`][mdast-util-to-markdown].
 
 ###### Parameters
 
-*   `options` ([`ToOptions`][api-tooptions], optional)
+*   `options` ([`ToOptions`][api-to-options], optional)
     — configuration
 
 ###### Returns
 
 Extension for `mdast-util-to-markdown`
-([`ToMarkdownExtension`][tomarkdownextension]).
+([`ToMarkdownExtension`][to-markdown-extension]).
 
 ### `InlineMath`
 
@@ -250,7 +251,7 @@ The following interfaces are added to **[mdast][]** by this utility.
 
 ```idl
 interface Math <: Literal {
-  type: "code"
+  type: 'code'
   meta: string?
 }
 ```
@@ -290,7 +291,7 @@ Yields:
 
 ```idl
 interface InlineMath <: Literal {
-  type: "inlineMath"
+  type: 'inlineMath'
 }
 ```
 
@@ -327,14 +328,14 @@ type FlowContentMath = Math | FlowContent
 #### `PhrasingContent` (math)
 
 ```idl
-type PhrasingMath = InlineMath | PhrasingContent
+type PhrasingContentMath = InlineMath | PhrasingContent
 ```
 
 ## Types
 
 This package is fully typed with [TypeScript][].
-It exports the additional types [`InlineMath`][api-inlinemath],
-[`Math`][api-math], and [`ToOptions`][api-tooptions].
+It exports the additional types [`InlineMath`][api-inline-math],
+[`Math`][api-math], and [`ToOptions`][api-to-options].
 
 It also registers the node types with `@types/mdast`.
 If you’re working with the syntax tree, make sure to import this utility
@@ -357,10 +358,13 @@ visit(tree, function (node) {
 
 ## Compatibility
 
-Projects maintained by the unified collective are compatible with all maintained
+Projects maintained by the unified collective are compatible with maintained
 versions of Node.js.
-As of now, that is Node.js 14.14+ and 16.0+.
-Our projects sometimes work with older versions, but this is not guaranteed.
+
+When we cut a new major release, we drop support for unmaintained versions of
+Node.
+This means we try to keep the current release line, `mdast-util-math@^2`,
+compatible with Node.js 12.
 
 This plugin works with `mdast-util-from-markdown` version 1+ and
 `mdast-util-to-markdown` version 1+.
@@ -400,9 +404,9 @@ abide by its terms.
 
 [downloads]: https://www.npmjs.com/package/mdast-util-math
 
-[size-badge]: https://img.shields.io/bundlephobia/minzip/mdast-util-math.svg
+[size-badge]: https://img.shields.io/badge/dynamic/json?label=minzipped%20size&query=$.size.compressedSize&url=https://deno.bundlejs.com/?q=mdast-util-math
 
-[size]: https://bundlephobia.com/result?p=mdast-util-math
+[size]: https://bundlejs.com/?q=mdast-util-math
 
 [sponsors-badge]: https://opencollective.com/unified/sponsors/badge.svg
 
@@ -454,19 +458,19 @@ abide by its terms.
 
 [dfn-literal]: https://github.com/syntax-tree/mdast#literal
 
-[frommarkdownextension]: https://github.com/syntax-tree/mdast-util-from-markdown#extension
+[from-markdown-extension]: https://github.com/syntax-tree/mdast-util-from-markdown#extension
 
-[tomarkdownextension]: https://github.com/syntax-tree/mdast-util-to-markdown#options
+[to-markdown-extension]: https://github.com/syntax-tree/mdast-util-to-markdown#options
 
-[api-mathfrommarkdown]: #mathfrommarkdown
+[api-math-from-markdown]: #mathfrommarkdown
 
-[api-mathtomarkdown]: #mathtomarkdownoptions
+[api-math-to-markdown]: #mathtomarkdownoptions
 
 [api-math]: #math
 
-[api-inlinemath]: #inlinemath
+[api-inline-math]: #inlinemath
 
-[api-tooptions]: #tooptions
+[api-to-options]: #tooptions
 
 [dfn-flow-content]: #flowcontent-math
 
