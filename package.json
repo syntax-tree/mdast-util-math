@@ -38,6 +38,7 @@
   ],
   "dependencies": {
     "@types/mdast": "^4.0.0",
+    "devlop": "^1.0.0",
     "longest-streak": "^3.0.0",
     "mdast-util-from-markdown": "^2.0.0",
     "mdast-util-to-markdown": "^2.1.0"
@@ -81,9 +82,19 @@
     "strict": true
   },
   "xo": {
+    "overrides": [
+      {
+        "files": [
+          "**/*.ts"
+        ],
+        "rules": {
+          "@typescript-eslint/ban-types": "off",
+          "@typescript-eslint/consistent-type-definitions": "off"
+        }
+      }
+    ],
     "prettier": true,
     "rules": {
-      "@typescript-eslint/ban-types": "off",
       "unicorn/prefer-at": "off",
       "unicorn/prefer-string-replace-all": "off"
     }

@@ -7,7 +7,6 @@ export type {ToOptions} from './lib/index.js'
 /**
  * Math (flow).
  */
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface Math extends Literal {
   /**
    * Node type.
@@ -17,13 +16,12 @@ export interface Math extends Literal {
   /**
    * Custom information relating to the node.
    */
-  meta?: string | undefined | null
+  meta?: string | null | undefined
 }
 
 /**
  * Math (text).
  */
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface InlineMath extends Literal {
   /**
    * Node type.
@@ -33,7 +31,6 @@ export interface InlineMath extends Literal {
 
 // Add custom data tracked to turn markdown into a tree.
 declare module 'mdast-util-from-markdown' {
-  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface CompileData {
     /**
      * Whether we’re in math (flow).
@@ -44,7 +41,6 @@ declare module 'mdast-util-from-markdown' {
 
 // Add custom data tracked to turn a tree into markdown.
 declare module 'mdast-util-to-markdown' {
-  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface ConstructNameMap {
     /**
      * Math (flow).
@@ -76,17 +72,14 @@ declare module 'mdast-util-to-markdown' {
 
 // Add nodes to tree.
 declare module 'mdast' {
-  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface BlockContentMap {
     math: Math
   }
 
-  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface PhrasingContentMap {
     inlineMath: InlineMath
   }
 
-  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface RootContentMap {
     inlineMath: InlineMath
     math: Math

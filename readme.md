@@ -213,7 +213,7 @@ import type {Literal} from 'mdast'
 
 interface Math extends Literal {
   type: 'math'
-  meta?: string | undefined | null
+  meta?: string | null | undefined
 }
 ```
 
@@ -350,7 +350,7 @@ import {visit} from 'unist-util-visit'
 /** @type {import('mdast').Root} */
 const tree = getMdastNodeSomeHow()
 
-visit(tree, (node) => {
+visit(tree, function (node) {
   // `node` can now be one of the nodes for math.
 })
 ```
