@@ -1,6 +1,6 @@
 {
   "name": "mdast-util-math",
-  "version": "2.0.2",
+  "version": "3.0.0",
   "description": "mdast extension to parse and serialize math",
   "license": "MIT",
   "keywords": [

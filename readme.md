@@ -83,14 +83,14 @@ npm install mdast-util-math
 In Deno with [`esm.sh`][esmsh]:
 
 ```js
-import {mathFromMarkdown, mathToMarkdown} from 'https://esm.sh/mdast-util-math@2'
+import {mathFromMarkdown, mathToMarkdown} from 'https://esm.sh/mdast-util-math@3'
 ```
 
 In browsers with [`esm.sh`][esmsh]:
 
 ```html
 <script type="module">
-  import {mathFromMarkdown, mathToMarkdown} from 'https://esm.sh/mdast-util-math@2?bundle'
+  import {mathFromMarkdown, mathToMarkdown} from 'https://esm.sh/mdast-util-math@3?bundle'
 </script>
 ```
 
