@@ -1,4 +1,4 @@
-import type {Literal} from 'mdast'
+import type {Data, Literal} from 'mdast'
 
 export {mathFromMarkdown, mathToMarkdown} from './lib/index.js'
 
@@ -9,7 +9,7 @@ export type {ToOptions} from './lib/index.js'
  */
 export interface Math extends Literal {
   /**
-   * Node type.
+   * Node type of math (flow).
    */
   type: 'math'
 
@@ -17,17 +17,37 @@ export interface Math extends Literal {
    * Custom information relating to the node.
    */
   meta?: string | null | undefined
+
+  /**
+   * Data associated with the mdast math (flow).
+   */
+  data?: MathData | undefined
 }
+
+/**
+ * Info associated with mdast math (flow) nodes by the ecosystem.
+ */
+export interface MathData extends Data {}
 
 /**
  * Math (text).
  */
 export interface InlineMath extends Literal {
   /**
-   * Node type.
+   * Node type of math (text).
    */
   type: 'inlineMath'
+
+  /**
+   * Data associated with the mdast math (text).
+   */
+  data?: InlineMathData | undefined
 }
+
+/**
+ * Info associated with mdast math (text) nodes by the ecosystem.
+ */
+export interface InlineMathData extends Data {}
 
 // Add custom data tracked to turn markdown into a tree.
 declare module 'mdast-util-from-markdown' {
