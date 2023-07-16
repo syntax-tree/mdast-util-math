@@ -77,12 +77,18 @@ declare module 'mdast-util-to-markdown' {
 // Add nodes to tree.
 declare module 'mdast' {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-  interface StaticPhrasingContentMap {
+  interface BlockContentMap {
+    math: Math
+  }
+
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+  interface PhrasingContentMap {
     inlineMath: InlineMath
   }
 
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-  interface BlockContentMap {
+  interface RootContentMap {
+    inlineMath: InlineMath
     math: Math
   }
 }
