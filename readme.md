@@ -68,8 +68,8 @@ internals away.
 This utility adds [fields on nodes][fields] so that the utility responsible for
 turning mdast (markdown) nodes into hast (HTML) nodes,
 [`mdast-util-to-hast`][mdast-util-to-hast], turns text (inline) math nodes into
-`<span class="math math-inline">…</span>` and flow (block) math nodes into
-`<div class="math math-display">…</div>`.
+`<code class="language-math math-inline">…</code>` and flow (block) math nodes
+into `<pre><code class="language-math math-display">…</code></pre>`.
 
 ## Install
 
@@ -99,7 +99,8 @@ In browsers with [`esm.sh`][esmsh]:
 Say our document `example.md` contains:
 
 ```markdown
-Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following equation.
+Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following
+equation.
 
 $$
 L = \frac{1}{2} \rho v^2 S C_L
@@ -142,8 +143,8 @@ brevity):
         {type: 'text', value: 'Lift('},
         {type: 'inlineMath', value: 'L', data: {/* … */}},
         {type: 'text', value: ') can be determined by Lift Coefficient ('},
-        {type: 'inlineMath', e: 'C_L', data: {/* … */}},
-        {type: 'text', value: ') like the following equation.'}
+        {type: 'inlineMath', value: 'C_L', data: {/* … */}},
+        {type: 'text', value: ') like the following\nequation.'}
       ]
     },
     {type: 'math', meta: null, value: 'L = \\frac{1}{2} \\rho v^2 S C_L', data: {/* … */}}
@@ -152,7 +153,8 @@ brevity):
 ```
 
 ```markdown
-Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following equation.
+Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following
+equation.
 
 $$
 L = \frac{1}{2} \rho v^2 S C_L
@@ -196,11 +198,14 @@ Math (text) (TypeScript type).
 ###### Type
 
 ```ts
-import type {Literal} from 'mdast'
+import type {Data, Literal} from 'mdast'
 
 interface InlineMath extends Literal {
   type: 'inlineMath'
+  data?: InlineMathData | undefined
 }
+
+export interface InlineMathData extends Data {}
 ```
 
 ### `Math`
@@ -210,12 +215,15 @@ Math (flow) (TypeScript type).
 ###### Type
 
 ```ts
-import type {Literal} from 'mdast'
+import type {Data, Literal} from 'mdast'
 
 interface Math extends Literal {
   type: 'math'
   meta?: string | null | undefined
+  data?: MathData | undefined
 }
+
+export interface MathData extends Data {}
 ```
 
 ### `ToOptions`
@@ -234,8 +242,8 @@ Configuration (TypeScript type).
 
 This plugin integrates with [`mdast-util-to-hast`][mdast-util-to-hast].
 When mdast is turned into hast the math nodes are turned into
-`<span class="math math-inline">…</span>` and
-`<div class="math math-display">…</div>` elements.
+`<code class="language-math math-inline">…</code>` and
+`<pre><code class="language-math math-display">…</code></pre>` elements.
 
 ## Syntax
 
