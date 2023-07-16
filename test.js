@@ -2,12 +2,12 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import {math} from 'micromark-extension-math'
 import {fromMarkdown} from 'mdast-util-from-markdown'
+import {mathFromMarkdown, mathToMarkdown} from 'mdast-util-math'
 import {toMarkdown} from 'mdast-util-to-markdown'
-import {mathFromMarkdown, mathToMarkdown} from './index.js'
 
 test('core', async function (t) {
   await t.test('should expose the public api', async function () {
-    assert.deepEqual(Object.keys(await import('./index.js')).sort(), [
+    assert.deepEqual(Object.keys(await import('mdast-util-math')).sort(), [
       'mathFromMarkdown',
       'mathToMarkdown'
     ])
