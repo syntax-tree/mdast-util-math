@@ -338,6 +338,49 @@ test('mathToMarkdown', async function (t) {
   })
 
   await t.test(
+    'should escape `$` in phrasing even when the next character is also escaped',
+    async function () {
+      assert.deepEqual(
+        toMarkdown(
+          {type: 'paragraph', children: [{type: 'text', value: '$[$$'}]},
+          {extensions: [mathToMarkdown()]}
+        ),
+        '\\$\\[\\$\\$\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should not introduce math (text) when roundtripping `$[$$`',
+    async function () {
+      const options = {
+        extensions: [math()],
+        mdastExtensions: [mathFromMarkdown()]
+      }
+      const tree1 = fromMarkdown('$[$$', options)
+      const output = toMarkdown(tree1, {extensions: [mathToMarkdown()]})
+      const tree2 = fromMarkdown(output, options)
+      const left = tree1.children[0]
+      const right = tree2.children[0]
+
+      assert(left.type === 'paragraph')
+      assert(right.type === 'paragraph')
+      assert.deepEqual(
+        left.children.map(function (d) {
+          return d.type
+        }),
+        ['text']
+      )
+      assert.deepEqual(
+        right.children.map(function (d) {
+          return d.type
+        }),
+        ['text']
+      )
+    }
+  )
+
+  await t.test(
     'should not escape a single dollar in phrasing w/ `singleDollarTextMath: false`',
     async function () {
       assert.deepEqual(
