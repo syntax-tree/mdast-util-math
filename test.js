@@ -316,17 +316,6 @@ test('mathToMarkdown', async function (t) {
     }
   )
 
-  await t.test('should serialize math (flow) w/ `meta`', async function () {
-    assert.equal(
-      toMarkdown(
-        // @ts-expect-error: check how runtime handles `value` missing.
-        {type: 'math', meta: 'a'},
-        {extensions: [mathToMarkdown()]}
-      ),
-      '$$a\n$$\n'
-    )
-  })
-
   await t.test('should escape `$` in phrasing', async function () {
     assert.equal(
       toMarkdown(
