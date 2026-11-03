@@ -1,38 +1,8 @@
 {
-  "name": "mdast-util-math",
-  "version": "3.0.0",
-  "description": "mdast extension to parse and serialize math",
-  "license": "MIT",
-  "keywords": [
-    "unist",
-    "mdast",
-    "mdast-util",
-    "util",
-    "utility",
-    "markdown",
-    "markup",
-    "math",
-    "katex",
-    "latex",
-    "tex"
-  ],
-  "repository": "syntax-tree/mdast-util-math",
-  "bugs": "https://github.com/syntax-tree/mdast-util-math/issues",
-  "funding": {
-    "type": "opencollective",
-    "url": "https://opencollective.com/unified"
-  },
   "author": "Titus Wormer <tituswormer@gmail.com> (https://wooorm.com)",
+  "bugs": "https://github.com/syntax-tree/mdast-util-math/issues",
   "contributors": [
     "Titus Wormer <tituswormer@gmail.com> (https://wooorm.com)"
-  ],
-  "sideEffects": false,
-  "type": "module",
-  "exports": "./index.js",
-  "files": [
-    "lib/",
-    "index.d.ts",
-    "index.js"
   ],
   "dependencies": {
     "@types/hast": "^3.0.0",
@@ -43,6 +13,7 @@
     "mdast-util-to-markdown": "^2.1.0",
     "unist-util-remove-position": "^5.0.0"
   },
+  "description": "mdast extension to parse and serialize math",
   "devDependencies": {
     "@types/node": "^26.0.0",
     "c8": "^12.0.0",
@@ -54,16 +25,31 @@
     "typescript": "^6.0.0",
     "xo": "^5.0.0"
   },
-  "scripts": {
-    "prepack": "npm run build && npm run format",
-    "build": "tsc --build --clean && tsc --build && type-coverage",
-    "format": "remark . -qfo && prettier . -w --log-level warn && xo --fix",
-    "test-api-dev": "node --conditions development test.js",
-    "test-api-prod": "node --conditions production test.js",
-    "test-api": "npm run test-api-dev && npm run test-api-prod",
-    "test-coverage": "c8 --100 --reporter lcov npm run test-api",
-    "test": "npm run build && npm run format && npm run test-coverage"
+  "exports": "./index.js",
+  "files": [
+    "lib/",
+    "index.d.ts",
+    "index.js"
+  ],
+  "funding": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/unified"
   },
+  "keywords": [
+    "katex",
+    "latex",
+    "markdown",
+    "markup",
+    "math",
+    "mdast-util",
+    "mdast",
+    "tex",
+    "unist",
+    "utility",
+    "util"
+  ],
+  "license": "MIT",
+  "name": "mdast-util-math",
   "prettier": {
     "bracketSpacing": false,
     "semi": false,
@@ -77,10 +63,22 @@
       "remark-preset-wooorm"
     ]
   },
+  "repository": "syntax-tree/mdast-util-math",
+  "scripts": {
+    "build": "tsc --build --clean && tsc --build && type-coverage",
+    "format": "remark --frail --output --quiet -- . && prettier --log-level warn --write -- . && xo --fix",
+    "prepack": "npm run build && npm run format",
+    "test-api-dev": "node --conditions development test.js",
+    "test-api-prod": "node --conditions production test.js",
+    "test-api": "npm run test-api-dev && npm run test-api-prod",
+    "test-coverage": "c8 --100 --reporter lcov -- npm run test-api",
+    "test": "npm run build && npm run format && npm run test-coverage"
+  },
+  "sideEffects": false,
   "typeCoverage": {
     "atLeast": 100,
-    "detail": true,
-    "ignoreCatch": true,
     "strict": true
-  }
+  },
+  "type": "module",
+  "version": "3.0.0"
 }
