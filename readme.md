@@ -79,12 +79,6 @@ In Node.js (version 16+), install with [npm][npmjs-install]:
 npm install mdast-util-math
 ```
 
-In Deno with [`esm.sh`][esmsh]:
-
-```js
-import {mathFromMarkdown, mathToMarkdown} from 'https://esm.sh/mdast-util-math@3'
-```
-
 In browsers with [`esm.sh`][esmsh]:
 
 ```html
@@ -425,7 +419,7 @@ abide by its terms.
 
 [badge-downloads-url]: https://www.npmjs.com/package/mdast-util-math
 
-[badge-size-image]: https://img.shields.io/badge/dynamic/json?label=minzipped%20size\&query=$.size.compressedSize\&url=https://deno.bundlejs.com/?q=mdast-util-math
+[badge-size-image]: https://img.shields.io/bundlejs/size/mdast-util-math
 
 [badge-size-url]: https://bundlejs.com/?q=mdast-util-math
 
