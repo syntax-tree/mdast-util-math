@@ -1,47 +1,44 @@
 # mdast-util-math
 
-[![Build][build-badge]][build]
-[![Coverage][coverage-badge]][coverage]
-[![Downloads][downloads-badge]][downloads]
-[![Size][size-badge]][size]
-[![Sponsors][sponsors-badge]][collective]
-[![Backers][backers-badge]][collective]
-[![Chat][chat-badge]][chat]
+[![Build][badge-build-image]][badge-build-url]
+[![Coverage][badge-coverage-image]][badge-coverage-url]
+[![Downloads][badge-downloads-image]][badge-downloads-url]
+[![Size][badge-size-image]][badge-size-url]
 
-[mdast][] extensions to parse and serialize math (`$C_L$`).
+[mdast][github-mdast] extensions to parse and serialize math (`$C_L$`).
 
 ## Contents
 
-*   [What is this?](#what-is-this)
-*   [When to use this](#when-to-use-this)
-*   [Install](#install)
-*   [Use](#use)
-*   [API](#api)
-    *   [`mathFromMarkdown()`](#mathfrommarkdown)
-    *   [`mathToMarkdown(options?)`](#mathtomarkdownoptions)
-    *   [`InlineMath`](#inlinemath)
-    *   [`Math`](#math)
-    *   [`ToOptions`](#tooptions)
-*   [HTML](#html)
-*   [Syntax](#syntax)
-*   [Syntax tree](#syntax-tree)
-    *   [Nodes](#nodes)
-    *   [Content model](#content-model)
-*   [Types](#types)
-*   [Compatibility](#compatibility)
-*   [Related](#related)
-*   [Contribute](#contribute)
-*   [License](#license)
+* [What is this?](#what-is-this)
+* [When to use this](#when-to-use-this)
+* [Install](#install)
+* [Use](#use)
+* [API](#api)
+  * [`mathFromMarkdown()`](#mathfrommarkdown)
+  * [`mathToMarkdown(options?)`](#mathtomarkdownoptions)
+  * [`InlineMath`](#inlinemath)
+  * [`Math`](#math)
+  * [`ToOptions`](#tooptions)
+* [HTML](#html)
+* [Syntax](#syntax)
+* [Syntax tree](#syntax-tree)
+  * [Nodes](#nodes)
+  * [Content model](#content-model)
+* [Types](#types)
+* [Compatibility](#compatibility)
+* [Related](#related)
+* [Contribute](#contribute)
+* [License](#license)
 
 ## What is this?
 
 This package contains two extensions that add support for math syntax in
-markdown to [mdast][].
+markdown to [mdast][github-mdast].
 These extensions plug into
-[`mdast-util-from-markdown`][mdast-util-from-markdown] (to support parsing
-math in markdown into a syntax tree) and
-[`mdast-util-to-markdown`][mdast-util-to-markdown] (to support serializing
-math in syntax trees to markdown).
+[`mdast-util-from-markdown`][github-mdast-util-from-markdown]
+(to support parsing math in markdown into a syntax tree) and
+[`mdast-util-to-markdown`][github-mdast-util-to-markdown]
+(to support serializing math in syntax trees to markdown).
 
 ## When to use this
 
@@ -55,26 +52,28 @@ You can use these extensions when you are working with
 `mdast-util-from-markdown` and `mdast-util-to-markdown` already.
 
 When working with `mdast-util-from-markdown`, you must combine this package
-with [`micromark-extension-math`][micromark-extension-math].
+with [`micromark-extension-math`][github-micromark-extension-math].
 
-When you don’t need a syntax tree, you can use [`micromark`][micromark]
+When you don’t need a syntax tree, you can use [`micromark`][github-micromark]
 directly with
-[`micromark-extension-math`][micromark-extension-math].
+[`micromark-extension-math`][github-micromark-extension-math].
 
-All these packages are used [`remark-math`][remark-math], which
+All these packages are used in [`remark-math`][github-remark-math], which
 focusses on making it easier to transform content by abstracting these
 internals away.
 
-This utility adds [fields on nodes][fields] so that the utility responsible for
-turning mdast (markdown) nodes into hast (HTML) nodes,
-[`mdast-util-to-hast`][mdast-util-to-hast], turns text (inline) math nodes into
+This utility adds [fields on nodes][github-mdast-util-to-hast-fields] so that
+the utility responsible for turning mdast (markdown) nodes into hast (HTML)
+nodes,
+[`mdast-util-to-hast`][github-mdast-util-to-hast],
+turns text (inline) math nodes into
 `<code class="language-math math-inline">…</code>` and flow (block) math nodes
 into `<pre><code class="language-math math-display">…</code></pre>`.
 
 ## Install
 
-This package is [ESM only][esm].
-In Node.js (version 16+), install with [npm][]:
+This package is [ESM only][github-gist-esm].
+In Node.js (version 16+), install with [npm][npmjs-install]:
 
 ```sh
 npm install mdast-util-math
@@ -170,26 +169,28 @@ There is no default export.
 
 ### `mathFromMarkdown()`
 
-Create an extension for [`mdast-util-from-markdown`][mdast-util-from-markdown].
+Create an extension for
+[`mdast-util-from-markdown`][github-mdast-util-from-markdown].
 
 ###### Returns
 
 Extension for `mdast-util-from-markdown`
-([`FromMarkdownExtension`][from-markdown-extension]).
+([`FromMarkdownExtension`][github-mdast-util-from-markdown-extension]).
 
 ### `mathToMarkdown(options?)`
 
-Create an extension for [`mdast-util-to-markdown`][mdast-util-to-markdown].
+Create an extension for
+[`mdast-util-to-markdown`][github-mdast-util-to-markdown].
 
 ###### Parameters
 
-*   `options` ([`ToOptions`][api-to-options], optional)
-    — configuration
+* `options` ([`ToOptions`][api-to-options], optional)
+  — configuration
 
 ###### Returns
 
 Extension for `mdast-util-to-markdown`
-([`ToMarkdownExtension`][to-markdown-extension]).
+([`ToMarkdownExtension`][github-mdast-util-to-markdown-options]).
 
 ### `InlineMath`
 
@@ -232,26 +233,27 @@ Configuration (TypeScript type).
 
 ###### Fields
 
-*   `singleDollarTextMath` (`boolean`, default: `true`)
-    — whether to support math (text) with a single dollar.
-    Single dollars work in Pandoc and many other places, but often interfere
-    with “normal” dollars in text.
-    If you turn this off, you can still use two or more dollars for text math
+* `singleDollarTextMath` (`boolean`, default: `true`)
+  — whether to support math (text) with a single dollar.
+  Single dollars work in Pandoc and many other places, but often interfere
+  with “normal” dollars in text.
+  If you turn this off, you can still use two or more dollars for text math
 
 ## HTML
 
-This plugin integrates with [`mdast-util-to-hast`][mdast-util-to-hast].
+This plugin integrates with [`mdast-util-to-hast`][github-mdast-util-to-hast].
 When mdast is turned into hast the math nodes are turned into
 `<code class="language-math math-inline">…</code>` and
 `<pre><code class="language-math math-display">…</code></pre>` elements.
 
 ## Syntax
 
-See [Syntax in `micromark-extension-frontmatter`][syntax].
+See
+[Syntax in `micromark-extension-math`][github-micromark-extension-math-syntax].
 
 ## Syntax tree
 
-The following interfaces are added to **[mdast][]** by this utility.
+The following interfaces are added to **[mdast][github-mdast]** by this utility.
 
 ### Nodes
 
@@ -264,7 +266,7 @@ interface Math <: Literal {
 }
 ```
 
-**Math** (**[Literal][dfn-literal]**) represents a block of math,
+**Math** (**[Literal][github-mdast-literal]**) represents a block of math,
 such as LaTeX mathematical expressions.
 
 **Math** can be used where **[flow][dfn-flow-content]** content is expected.
@@ -303,8 +305,9 @@ interface InlineMath <: Literal {
 }
 ```
 
-**InlineMath** (**[Literal][dfn-literal]**) represents a fragment of computer
-code, such as a file name, computer program, or anything a computer could parse.
+**InlineMath** (**[Literal][github-mdast-literal]**) represents a fragment of
+computer code, such as a file name, computer program, or anything a computer
+could parse.
 
 **InlineMath** can be used where **[phrasing][dfn-phrasing-content]** content
 is expected.
@@ -379,111 +382,101 @@ This plugin works with `mdast-util-from-markdown` version 2+ and
 
 ## Related
 
-*   [`remark-math`][remark-math]
-    — remark plugin to support math
-*   [`micromark-extension-math`][micromark-extension-math]
-    — micromark extension to parse math
+* [`remark-math`][github-remark-math]
+  — remark plugin to support math
+* [`micromark-extension-math`][github-micromark-extension-math]
+  — micromark extension to parse math
 
 ## Contribute
 
-See [`contributing.md`][contributing] in [`syntax-tree/.github`][health] for
-ways to get started.
-See [`support.md`][support] for ways to get help.
+See [`contributing.md`][health-contributing] in [`syntax-tree/.github`][health]
+for ways to get started.
+See [`support.md`][health-support] for ways to get help.
 
-This project has a [code of conduct][coc].
+This project has a [code of conduct][health-coc].
 By interacting with this repository, organization, or community you agree to
 abide by its terms.
 
 ## License
 
-[MIT][license] © [Titus Wormer][author]
+[MIT][file-license] © [Titus Wormer][wooorm]
 
 <!-- Definitions -->
 
-[build-badge]: https://github.com/syntax-tree/mdast-util-math/workflows/main/badge.svg
+[api-inline-math]: #inlinemath
 
-[build]: https://github.com/syntax-tree/mdast-util-math/actions
-
-[coverage-badge]: https://img.shields.io/codecov/c/github/syntax-tree/mdast-util-math.svg
-
-[coverage]: https://codecov.io/github/syntax-tree/mdast-util-math
-
-[downloads-badge]: https://img.shields.io/npm/dm/mdast-util-math.svg
-
-[downloads]: https://www.npmjs.com/package/mdast-util-math
-
-[size-badge]: https://img.shields.io/badge/dynamic/json?label=minzipped%20size&query=$.size.compressedSize&url=https://deno.bundlejs.com/?q=mdast-util-math
-
-[size]: https://bundlejs.com/?q=mdast-util-math
-
-[sponsors-badge]: https://opencollective.com/unified/sponsors/badge.svg
-
-[backers-badge]: https://opencollective.com/unified/backers/badge.svg
-
-[collective]: https://opencollective.com/unified
-
-[chat-badge]: https://img.shields.io/badge/chat-discussions-success.svg
-
-[chat]: https://github.com/syntax-tree/unist/discussions
-
-[npm]: https://docs.npmjs.com/cli/install
-
-[esm]: https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c
-
-[esmsh]: https://esm.sh
-
-[typescript]: https://www.typescriptlang.org
-
-[license]: license
-
-[author]: https://wooorm.com
-
-[health]: https://github.com/syntax-tree/.github
-
-[contributing]: https://github.com/syntax-tree/.github/blob/main/contributing.md
-
-[support]: https://github.com/syntax-tree/.github/blob/main/support.md
-
-[coc]: https://github.com/syntax-tree/.github/blob/main/code-of-conduct.md
-
-[remark-math]: https://github.com/remarkjs/remark-math
-
-[mdast]: https://github.com/syntax-tree/mdast
-
-[mdast-util-from-markdown]: https://github.com/syntax-tree/mdast-util-from-markdown
-
-[mdast-util-to-markdown]: https://github.com/syntax-tree/mdast-util-to-markdown
-
-[mdast-util-to-hast]: https://github.com/syntax-tree/mdast-util-to-hast
-
-[micromark]: https://github.com/micromark/micromark
-
-[micromark-extension-math]: https://github.com/micromark/micromark-extension-math
-
-[syntax]: https://github.com/micromark/micromark-extension-math#syntax
-
-[fields]: https://github.com/syntax-tree/mdast-util-to-hast#fields-on-nodes
-
-[dfn-literal]: https://github.com/syntax-tree/mdast#literal
-
-[from-markdown-extension]: https://github.com/syntax-tree/mdast-util-from-markdown#extension
-
-[to-markdown-extension]: https://github.com/syntax-tree/mdast-util-to-markdown#options
+[api-math]: #math
 
 [api-math-from-markdown]: #mathfrommarkdown
 
 [api-math-to-markdown]: #mathtomarkdownoptions
 
-[api-math]: #math
-
-[api-inline-math]: #inlinemath
-
 [api-to-options]: #tooptions
 
-[dfn-flow-content]: #flowcontent-math
+[badge-build-image]: https://github.com/syntax-tree/mdast-util-math/workflows/main/badge.svg
 
-[dfn-phrasing-content]: #phrasingcontent-math
+[badge-build-url]: https://github.com/syntax-tree/mdast-util-math/actions
+
+[badge-coverage-image]: https://img.shields.io/codecov/c/github/syntax-tree/mdast-util-math.svg
+
+[badge-coverage-url]: https://codecov.io/github/syntax-tree/mdast-util-math
+
+[badge-downloads-image]: https://img.shields.io/npm/dm/mdast-util-math.svg
+
+[badge-downloads-url]: https://www.npmjs.com/package/mdast-util-math
+
+[badge-size-image]: https://img.shields.io/badge/dynamic/json?label=minzipped%20size\&query=$.size.compressedSize\&url=https://deno.bundlejs.com/?q=mdast-util-math
+
+[badge-size-url]: https://bundlejs.com/?q=mdast-util-math
+
+[dfn-flow-content]: #flowcontent-math
 
 [dfn-inline-math]: #inlinemath-1
 
 [dfn-math]: #math-1
+
+[dfn-phrasing-content]: #phrasingcontent-math
+
+[esmsh]: https://esm.sh
+
+[file-license]: license
+
+[github-gist-esm]: https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c
+
+[github-mdast]: https://github.com/syntax-tree/mdast
+
+[github-mdast-literal]: https://github.com/syntax-tree/mdast#literal
+
+[github-mdast-util-from-markdown]: https://github.com/syntax-tree/mdast-util-from-markdown
+
+[github-mdast-util-from-markdown-extension]: https://github.com/syntax-tree/mdast-util-from-markdown#extension
+
+[github-mdast-util-to-hast]: https://github.com/syntax-tree/mdast-util-to-hast
+
+[github-mdast-util-to-hast-fields]: https://github.com/syntax-tree/mdast-util-to-hast#fields-on-nodes
+
+[github-mdast-util-to-markdown]: https://github.com/syntax-tree/mdast-util-to-markdown
+
+[github-mdast-util-to-markdown-options]: https://github.com/syntax-tree/mdast-util-to-markdown#options
+
+[github-micromark]: https://github.com/micromark/micromark
+
+[github-micromark-extension-math]: https://github.com/micromark/micromark-extension-math
+
+[github-micromark-extension-math-syntax]: https://github.com/micromark/micromark-extension-math#syntax
+
+[github-remark-math]: https://github.com/remarkjs/remark-math
+
+[health]: https://github.com/syntax-tree/.github
+
+[health-coc]: https://github.com/syntax-tree/.github/blob/main/code-of-conduct.md
+
+[health-contributing]: https://github.com/syntax-tree/.github/blob/main/contributing.md
+
+[health-support]: https://github.com/syntax-tree/.github/blob/main/support.md
+
+[npmjs-install]: https://docs.npmjs.com/cli/install
+
+[typescript]: https://www.typescriptlang.org
+
+[wooorm]: https://wooorm.com

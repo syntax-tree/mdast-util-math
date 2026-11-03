@@ -163,7 +163,7 @@ test('mathFromMarkdown', async function (t) {
 
 test('mathToMarkdown', async function (t) {
   await t.test('should serialize math (text)', async function () {
-    assert.deepEqual(
+    assert.equal(
       toMarkdown(
         {type: 'inlineMath', value: 'a'},
         {extensions: [mathToMarkdown()]}
@@ -175,7 +175,7 @@ test('mathToMarkdown', async function (t) {
   await t.test(
     'should serialize math (text) with at least 2 dollars w/ `singleDollarTextMath: false`',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {type: 'inlineMath', value: 'a'},
           {extensions: [mathToMarkdown({singleDollarTextMath: false})]}
@@ -186,7 +186,7 @@ test('mathToMarkdown', async function (t) {
   )
 
   await t.test('should serialize math (text) w/o `value`', async function () {
-    assert.deepEqual(
+    assert.equal(
       toMarkdown(
         // @ts-expect-error: check how runtime handles `value` missing.
         {type: 'inlineMath'},
@@ -199,7 +199,7 @@ test('mathToMarkdown', async function (t) {
   await t.test(
     'should serialize math (text) w/ two dollar signs when including a dollar',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {type: 'inlineMath', value: 'a \\$ b'},
           {extensions: [mathToMarkdown()]}
@@ -212,7 +212,7 @@ test('mathToMarkdown', async function (t) {
   await t.test(
     'should serialize math (text) w/ padding when ending in a dollar sign',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {type: 'inlineMath', value: 'a \\$'},
           {extensions: [mathToMarkdown()]}
@@ -225,7 +225,7 @@ test('mathToMarkdown', async function (t) {
   await t.test(
     'should serialize math (text) w/ padding when starting in a dollar sign',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {type: 'inlineMath', value: '$ a'},
           {extensions: [mathToMarkdown()]}
@@ -275,14 +275,14 @@ test('mathToMarkdown', async function (t) {
   )
 
   await t.test('should serialize math (flow)', async function () {
-    assert.deepEqual(
+    assert.equal(
       toMarkdown({type: 'math', value: 'a'}, {extensions: [mathToMarkdown()]}),
       '$$\na\n$$\n'
     )
   })
 
   await t.test('should serialize math (flow) w/o `value`', async function () {
-    assert.deepEqual(
+    assert.equal(
       toMarkdown(
         // @ts-expect-error: check how runtime handles `value` missing.
         {type: 'math'},
@@ -293,7 +293,7 @@ test('mathToMarkdown', async function (t) {
   })
 
   await t.test('should serialize math (flow) w/ `meta`', async function () {
-    assert.deepEqual(
+    assert.equal(
       toMarkdown(
         // @ts-expect-error: check how runtime handles `value` missing.
         {type: 'math', meta: 'a'},
@@ -306,7 +306,7 @@ test('mathToMarkdown', async function (t) {
   await t.test(
     'should serialize math (flow) w/ more dollars than occur together in `value`',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {type: 'math', value: '$$'},
           {extensions: [mathToMarkdown()]}
@@ -317,7 +317,7 @@ test('mathToMarkdown', async function (t) {
   )
 
   await t.test('should serialize math (flow) w/ `meta`', async function () {
-    assert.deepEqual(
+    assert.equal(
       toMarkdown(
         // @ts-expect-error: check how runtime handles `value` missing.
         {type: 'math', meta: 'a'},
@@ -328,7 +328,7 @@ test('mathToMarkdown', async function (t) {
   })
 
   await t.test('should escape `$` in phrasing', async function () {
-    assert.deepEqual(
+    assert.equal(
       toMarkdown(
         {type: 'paragraph', children: [{type: 'text', value: 'a $ b'}]},
         {extensions: [mathToMarkdown()]}
@@ -340,7 +340,7 @@ test('mathToMarkdown', async function (t) {
   await t.test(
     'should not escape a single dollar in phrasing w/ `singleDollarTextMath: false`',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {type: 'paragraph', children: [{type: 'text', value: 'a $ b'}]},
           {extensions: [mathToMarkdown({singleDollarTextMath: false})]}
@@ -353,7 +353,7 @@ test('mathToMarkdown', async function (t) {
   await t.test(
     'should escape two dollars in phrasing w/ `singleDollarTextMath: false`',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {type: 'paragraph', children: [{type: 'text', value: 'a $$ b'}]},
           {extensions: [mathToMarkdown({singleDollarTextMath: false})]}
@@ -364,7 +364,7 @@ test('mathToMarkdown', async function (t) {
   )
 
   await t.test('should escape `$` around math (text)', async function () {
-    assert.deepEqual(
+    assert.equal(
       toMarkdown(
         {
           type: 'paragraph',
@@ -383,7 +383,7 @@ test('mathToMarkdown', async function (t) {
   await t.test(
     'should not escape `$` at the start of a line',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {
             type: 'definition',
@@ -402,7 +402,7 @@ test('mathToMarkdown', async function (t) {
   await t.test(
     'should escape `\\r`, `\\n` when in `meta` of math (flow)',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {type: 'math', meta: 'a\rb\nc', value: ''},
           {extensions: [mathToMarkdown()]}
@@ -415,7 +415,7 @@ test('mathToMarkdown', async function (t) {
   await t.test(
     'should escape `$` when in `meta` of math (flow)',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {type: 'math', meta: 'a$b', value: ''},
           {extensions: [mathToMarkdown()]}
