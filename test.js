@@ -3,6 +3,7 @@ import test from 'node:test'
 import {math} from 'micromark-extension-math'
 import {fromMarkdown} from 'mdast-util-from-markdown'
 import {mathFromMarkdown, mathToMarkdown} from 'mdast-util-math'
+import {toHast} from 'mdast-util-to-hast'
 import {toMarkdown} from 'mdast-util-to-markdown'
 
 test('core', async function (t) {
@@ -159,6 +160,70 @@ test('mathFromMarkdown', async function (t) {
       }
     )
   })
+})
+
+test('mdast-util-to-hast', async function (t) {
+  await t.test(
+    'should turn math into `code`, `pre` elements',
+    async function () {
+      assert.deepEqual(
+        toHast(
+          fromMarkdown('$a$\n\n$$\nb\n$$', {
+            extensions: [math()],
+            mdastExtensions: [mathFromMarkdown()]
+          })
+        ),
+        {
+          type: 'root',
+          children: [
+            {
+              type: 'element',
+              tagName: 'p',
+              properties: {},
+              children: [
+                {
+                  type: 'element',
+                  tagName: 'code',
+                  properties: {className: ['language-math', 'math-inline']},
+                  children: [{type: 'text', value: 'a'}],
+                  position: {
+                    start: {line: 1, column: 1, offset: 0},
+                    end: {line: 1, column: 4, offset: 3}
+                  }
+                }
+              ],
+              position: {
+                start: {line: 1, column: 1, offset: 0},
+                end: {line: 1, column: 4, offset: 3}
+              }
+            },
+            {type: 'text', value: '\n'},
+            {
+              type: 'element',
+              tagName: 'pre',
+              properties: {},
+              children: [
+                {
+                  type: 'element',
+                  tagName: 'code',
+                  properties: {className: ['language-math', 'math-display']},
+                  children: [{type: 'text', value: 'b'}]
+                }
+              ],
+              position: {
+                start: {line: 3, column: 1, offset: 5},
+                end: {line: 5, column: 3, offset: 12}
+              }
+            }
+          ],
+          position: {
+            start: {line: 1, column: 1, offset: 0},
+            end: {line: 5, column: 3, offset: 12}
+          }
+        }
+      )
+    }
+  )
 })
 
 test('mathToMarkdown', async function (t) {
