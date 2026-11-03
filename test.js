@@ -392,6 +392,19 @@ test('mathToMarkdown', async function (t) {
   })
 
   await t.test(
+    'should escape `$` in phrasing before other escapes',
+    async function () {
+      assert.equal(
+        toMarkdown(
+          {type: 'paragraph', children: [{type: 'text', value: '$[$$'}]},
+          {extensions: [mathToMarkdown()]}
+        ),
+        '\\$\\[\\$\\$\n'
+      )
+    }
+  )
+
+  await t.test(
     'should not escape a single dollar in phrasing w/ `singleDollarTextMath: false`',
     async function () {
       assert.equal(
